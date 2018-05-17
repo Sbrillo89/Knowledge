@@ -1,0 +1,92 @@
+-------------------
+-- PREVIOUS YEAR --
+-------------------
+
+CREATE MEMBER CURRENTCUBE.[Measures].[Amount PY]
+AS
+(PARALLELPERIOD([DimTime].[YMD].[Year], 1 ,[DimTime].[YMD].currentmember )
+,[Measures].[Amount]),
+FORMAT_STRING = "#,#.00",
+VISIBLE = 1, DISPLAY_FOLDER = 'Amount\PY', ASSOCIATED_MEASURE_GROUP = Invoice';
+
+-------------------
+-- YEAR To DATE ---
+-------------------
+
+CREATE MEMBER CURRENTCUBE.[Measures].[Amount YTD]
+AS
+SUM
+(PERIODSTODATE([DimTime].[YMD].[Year], [DimTime].[YMD].currentmember )
+,[Measures].[Amount]),
+FORMAT_STRING = "#,#.00",
+VISIBLE = 1, DISPLAY_FOLDER = 'Amount\YTD', ASSOCIATED_MEASURE_GROUP = 'Invoice';
+
+----------------------------
+-- PREVIOUS YEAR To DATE ---
+----------------------------
+
+CREATE MEMBER CURRENTCUBE.[Measures].[Amount PYTD]
+AS
+SUM
+(PERIODSTODATE( [DimTime].[YMD].[Year], [DimTime].[YMD].currentmember )
+,[Measures].[Amount PY]),
+FORMAT_STRING = "#,#.00",
+VISIBLE = 1, DISPLAY_FOLDER = 'Amount\PYTD', ASSOCIATED_MEASURE_GROUP = 'Invoice';
+
+-----------------------
+-- vs PREVIOUS YEAR  --
+-----------------------
+
+CREATE MEMBER CURRENTCUBE.[Measures].[Amount vs PY]
+AS
+[Measures].[Amount] - [Measures].[Amount PY],
+FORMAT_STRING = "#,#.00",
+VISIBLE = 1, DISPLAY_FOLDER = 'Amount\CY vs PY', ASSOCIATED_MEASURE_GROUP = 'Invoice';
+
+-------------------------
+-- vs PREVIOUS YEAR %  --
+-------------------------
+
+CREATE MEMBER CURRENTCUBE.[Measures].[Amount vs PY %]
+AS
+CASE
+  WHEN [Measures].[Amount PY] = 0 THEN Null
+  ELSE [Measures].[Amount vs PY] / ABS([Measures].[Amount PY])
+  END,
+FORMAT_STRING = "Percent",
+FORE_COLOR = 
+CASE
+  WHEN [Measures].[Amount vs PY %] < 0 THEN 255
+  ELSE 0
+  END,
+VISIBLE = 1, DISPLAY_FOLDER = 'Amount\CY vs PY %', ASSOCIATED_MEASURE_GROUP = 'Invoice';
+
+-----------------
+-- YTD vs PYTD --
+-----------------
+
+CREATE MEMBER CURRENTCUBE.[Measures].[Amount YTD vs PYTD]
+AS
+[Measures].[Amount YTD] - [Measures].[Amount PYTD],
+FORMAT_STRING = "#,#.00",
+VISIBLE = 1, DISPLAY_FOLDER = 'Amount\YTD vs PYTD', ASSOCIATED_MEASURE_GROUP = 'Invoice';
+
+-------------------
+-- YTD vs PYTD % --
+-------------------
+
+CREATE MEMBER CURRENTCUBE.[Measures].[Amount YTD vs PYTD %]
+AS
+CASE
+  WHEN [Measures].[Amount PYTD] = 0 THEN Null
+  ELSE [Measures].[Amount YTD vs PYTD] / ABS([Measures].[Amount PYTD])
+  END,
+FORMAT_STRING = "Percent",
+FORE_COLOR = 
+CASE
+  WHEN [Measures].[Amount YTD vs PYTD %] < 0 THEN 255
+  ELSE 0
+  END,
+VISIBLE = 1, DISPLAY_FOLDER = 'Amount\YTD vs PYTD %', ASSOCIATED_MEASURE_GROUP = 'Invoice';
+
+
