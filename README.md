@@ -9,10 +9,10 @@
   - spInsert...
 
 ## MDX
-  - [Time Measures Base:](https://github.com/Sbrillo89/Knowledge/blob/master/MDX/Time%20Measures%20Base.txt)
+  - [Time Measures Base](https://github.com/Sbrillo89/Knowledge/blob/master/MDX/Time%20Measures%20Base.txt)
     
 ## DAX
-  - Time Measures Base:
+  - Time Measures Base
 
 ## VBA
     
