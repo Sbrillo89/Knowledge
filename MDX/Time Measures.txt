@@ -1,0 +1,33 @@
+-------------------
+-- PREVIOUS YEAR --
+-------------------
+
+CREATE MEMBER CURRENTCUBE.[Measures].[Amount PY]
+AS
+(PARALLELPERIOD([DimTime].[YMD].[Year], 1 ,[DimTime].[YMD].currentmember )
+,[Measures].[Amount]),
+FORMAT_STRING = "#,#.00",
+VISIBLE = 1, DISPLAY_FOLDER = 'Amount\PY', ASSOCIATED_MEASURE_GROUP = Invoice';
+
+-------------------
+-- YEAR To DATE ---
+-------------------
+
+CREATE MEMBER CURRENTCUBE.[Measures].[Amount YTD]
+AS
+SUM
+(PERIODSTODATE([DimTime].[YMD].[Year], [DimTime].[YMD].currentmember )
+,[Measures].[Amount]),
+FORMAT_STRING = "#,#.00",
+VISIBLE = 1, DISPLAY_FOLDER = 'Amount\YTD', ASSOCIATED_MEASURE_GROUP = 'Invoice';   
+
+
+
+
+
+
+
+
+
+
+
