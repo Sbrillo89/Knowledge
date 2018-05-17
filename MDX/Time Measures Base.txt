@@ -28,7 +28,7 @@ VISIBLE = 1, DISPLAY_FOLDER = 'Amount\YTD', ASSOCIATED_MEASURE_GROUP = 'Invoice'
 CREATE MEMBER CURRENTCUBE.[Measures].[Amount PYTD]
 AS
 SUM
-(PERIODSTODATE( [DimTime].[YMD].[Year], [DimTime].[YMD].currentmember )
+(PERIODSTODATE([DimTime].[YMD].[Year], [DimTime].[YMD].currentmember )
 ,[Measures].[Amount PY]),
 FORMAT_STRING = "#,#.00",
 VISIBLE = 1, DISPLAY_FOLDER = 'Amount\PYTD', ASSOCIATED_MEASURE_GROUP = 'Invoice';
