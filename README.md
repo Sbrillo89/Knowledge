@@ -1,13 +1,12 @@
 # Knowledge
 
-- SQL
+## SQL
 
-
-- MDX
+## MDX
   - Time Measures Base:
     - (PY, YTD, vs, vs %)
     
-- DAX
+## DAX
     
     
     
