@@ -126,6 +126,17 @@ set @maxDateInsert = convert(date , cast(@maxDate as varchar(8)))
   )
   set identity_insert dbo.DimTime off
 
+--Check if dates are consistent
+  IF @minDateInsert >= @maxDateInsert
+  BEGIN
+  raiserror ('Mimimum date greater than maximum date!', 16, 1)
+  return
+  END
+
+--Delete the dates range
+  DELETE 
+  FROM dbo.DimTime
+  WHERE [Date] between @minDateInsert and @maxDateInsert
 
 
 
