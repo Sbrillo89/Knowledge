@@ -168,52 +168,51 @@ set @maxDateInsert = convert(date , cast(@maxDate as varchar(8)))
     ,[YearMonth]
   )
 
-select
+  select
+    @minDateInsert                      --Date
 
-@minDateInsert --Date
-, cast(convert(varchar(10) , @minDateInsert, 112) as int) --AlternativeDate
-, convert(datetime, @minDateInsert) --fullDate
-, datepart(dw, @minDateInsert) -- dayWeekNumber
-, datename(dw, @minDateInsert) --dayWeekName
-, datepart(dd, @minDateInsert) --dayMonthNumber
-, datepart(dy, @minDateInsert) --dayYearNumber
-, datepart(wk, @minDateInsert) --weekYearNumber
-, datename(mm, @minDateInsert) --monthName
-, datepart(mm, @minDateInsert) --monthNumber
-, datepart(qq, @minDateInsert) --quarterNumber
-, datename(qq, @minDateInsert) + '° quarter ' + datename(yyyy, @minDateInsert) --quarterName
-, case
-when datepart(mm, @minDateInsert) between 1 and 4 then 1
-when datepart(mm, @minDateInsert) between 5 and 8 then 2
-when datepart(mm, @minDateInsert) between 9 and 12 then 3
-end --FourMonthNumber
+    ,datename(dw, @minDateInsert)       --DayName
+    ,datepart(dw, @minDateInsert)       --DayWeekNumber
+    ,datepart(dd, @minDateInsert)       --DayMonthNumber
+    ,datepart(dy, @minDateInsert)       --DayYearNumber
 
-, case
-when datepart(mm, @minDateInsert) between 1 and 4 then '1° four-month ' + datename(yyyy, @minDateInsert)
-when datepart(mm, @minDateInsert) between 5 and 8 then '2° four-month ' + datename(yyyy, @minDateInsert)
-when datepart(mm, @minDateInsert) between 9 and 12 then '3° four-month ' + datename(yyyy, @minDateInsert)
-end --FourMonthName
+    ,datepart(wk, @minDateInsert)       --weekYearNumber
 
-, case
-when datepart(mm, @minDateInsert) between 1 and 6 then 1
-when datepart(mm, @minDateInsert) between 7 and 12 then 2
-end --SemesterNumber
+    ,datepart(mm, @minDateInsert)       --monthNumber
+    ,datename(mm, @minDateInsert)       --monthName
 
-, case
-when datepart(mm, @minDateInsert) between 1 and 6 then '1° semester ' + datename(yyyy, @minDateInsert)
-when datepart(mm, @minDateInsert) between 7 and 12 then '2° semester ' + datename(yyyy, @minDateInsert)
-end --SemesterName
+    ,datepart(qq, @minDateInsert)       --quarterNumber
+    ,datename(qq, @minDateInsert)
+      + '° quarter '
+      + datename(yyyy, @minDateInsert)  --quarterName
 
-, datepart(yyyy, @minDateInsert) --Year
-, cast(datename(yyyy, @minDateInsert) + right('100' + datepart(mm, @minDateInsert), 2) as int) --YearMonth
-set @minDateInsert = dateadd(dd, 1, @minDateInsert)
+    ,case
+        when datepart(mm, @minDateInsert) between 1 and 4 then 1
+        when datepart(mm, @minDateInsert) between 5 and 8 then 2
+        when datepart(mm, @minDateInsert) between 9 and 12 then 3
+        end                             --FourMonthNumber
+    ,case
+        when datepart(mm, @minDateInsert) between 1 and 4 then '1° four-month ' + datename(yyyy, @minDateInsert)
+        when datepart(mm, @minDateInsert) between 5 and 8 then '2° four-month ' + datename(yyyy, @minDateInsert)
+        when datepart(mm, @minDateInsert) between 9 and 12 then '3° four-month ' + datename(yyyy, @minDateInsert)
+        end                             --FourMonthName
 
-end
+    ,case
+        when datepart(mm, @minDateInsert) between 1 and 6 then 1
+        when datepart(mm, @minDateInsert) between 7 and 12 then 2
+        end                             --SemesterNumber
+    ,case
+        when datepart(mm, @minDateInsert) between 1 and 6 then '1° semester ' + datename(yyyy, @minDateInsert)
+        when datepart(mm, @minDateInsert) between 7 and 12 then '2° semester ' + datename(yyyy, @minDateInsert)
+        end                             --SemesterName
 
-end
+    ,datepart(yyyy, @minDateInsert)     --Year
+    ,cast(datename(yyyy, @minDateInsert) 
+          + right('100' + datepart(mm, @minDateInsert), 2) as int) --YearMonth
 
+  set @minDateInsert = dateadd(dd, 1, @minDateInsert)
+
+  END
+
+END
 GO
-
-
-
-
