@@ -27,12 +27,19 @@ BEGIN
              VALUES (CAST(@Piece as varchar(MAX)))
 
              SELECT @Parameter = RIGHT(@Parameter, LEN(@Parameter) - @Chrind)
-             
+
              IF LEN(@Parameter) = 0
                     BREAK
        END
-       
+
 RETURN
 
 END
 GO
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+
+SELECT *
+FROM DimCustomer
+WHERE Customer IN (SELECT * FROM dbo.fnSplit(@Customer,'|'))
+
