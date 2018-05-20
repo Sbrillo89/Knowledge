@@ -185,7 +185,7 @@ set @maxDateInsert = convert(date , cast(@maxDate as varchar(8)))
 
     ,datepart(qq, @minDateInsert)       --quarterNumber
     ,datename(qq, @minDateInsert)
-      + '° quarter '
+      + '° Quarter '
       + datename(yyyy, @minDateInsert)  --quarterName
 
     ,case
@@ -194,9 +194,9 @@ set @maxDateInsert = convert(date , cast(@maxDate as varchar(8)))
         when datepart(mm, @minDateInsert) between 9 and 12 then 3
         end                             --FourMonthNumber
     ,case
-        when datepart(mm, @minDateInsert) between 1 and 4 then '1° four-month ' + datename(yyyy, @minDateInsert)
-        when datepart(mm, @minDateInsert) between 5 and 8 then '2° four-month ' + datename(yyyy, @minDateInsert)
-        when datepart(mm, @minDateInsert) between 9 and 12 then '3° four-month ' + datename(yyyy, @minDateInsert)
+        when datepart(mm, @minDateInsert) between 1 and 4 then '1° Four-month ' + datename(yyyy, @minDateInsert)
+        when datepart(mm, @minDateInsert) between 5 and 8 then '2° Four-month ' + datename(yyyy, @minDateInsert)
+        when datepart(mm, @minDateInsert) between 9 and 12 then '3° Four-month ' + datename(yyyy, @minDateInsert)
         end                             --FourMonthName
 
     ,case
@@ -204,8 +204,8 @@ set @maxDateInsert = convert(date , cast(@maxDate as varchar(8)))
         when datepart(mm, @minDateInsert) between 7 and 12 then 2
         end                             --SemesterNumber
     ,case
-        when datepart(mm, @minDateInsert) between 1 and 6 then '1° semester ' + datename(yyyy, @minDateInsert)
-        when datepart(mm, @minDateInsert) between 7 and 12 then '2° semester ' + datename(yyyy, @minDateInsert)
+        when datepart(mm, @minDateInsert) between 1 and 6 then '1° Semester ' + datename(yyyy, @minDateInsert)
+        when datepart(mm, @minDateInsert) between 7 and 12 then '2° Semester ' + datename(yyyy, @minDateInsert)
         end                             --SemesterName
 
     ,datepart(yyyy, @minDateInsert)     --Year
