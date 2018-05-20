@@ -27,11 +27,9 @@ BEGIN
           SET @Result = @Result + @nchar
 
       SET @position = @position + 1
-
-END
+    END
 
 RETURN @Result
-
 END
 
 GO
