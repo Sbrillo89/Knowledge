@@ -40,7 +40,7 @@ GO
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 -- Stored Procedure pPopulateDimTime:
--- dbo.pPopolaDimTime 112, 'Italian', 20100101, 20101231
+-- dbo.spPopulateDimTime 112, 'Italian', 20100101, 20101231
 
 CREATE procedure [dbo].[spPopulateDimTime] (
   @dateFormat as smallint
