@@ -2,14 +2,16 @@
 
 ## SQL
   - spPopulateDimTempo
-  - spPopulateDimTime
+  - [spPopulateDimTime](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/spPopulateDimTime.sql)
   - [spCreateNA](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/spCreateNA.sql)
+
+  - [fnSplit](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/fnSplit.sql)
+  - [fnRemoveNonASCII](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/fnRemoveNonASCII.sql)
+
   - spUpdate...
   - spGet...
   - spInsert...
   - spMerge...
-  - [fnSplit](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/fnSplit.sql)
-  - [fnRemoveNonASCII](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/fnRemoveNonASCII.sql)
 
 ## MDX
   - [Time Measures Base](https://github.com/Sbrillo89/Knowledge/blob/master/MDX/Time%20Measures%20Base.txt)
