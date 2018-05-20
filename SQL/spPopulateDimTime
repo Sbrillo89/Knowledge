@@ -1,0 +1,134 @@
+
+-- Create DimTime Table
+
+CREATE TABLE [dbo].[DimTime]
+(
+  [idTime] [int] IDENTITY(1,1) NOT NULL,
+  [Date] [date] NOT NULL,
+
+  [DayName] [nvarchar](20) NOT NULL,
+  [DayWeekNumber] [smallint] NOT NULL,
+  [DayMonthNumber] [smallint] NOT NULL,
+  [DayYearNumber] [smallint] NOT NULL,
+
+  [WeekNumber] [smallint] NOT NULL,
+
+  [MonthNumber] [smallint] NOT NULL,
+  [MonthName] [nvarchar](20) NOT NULL,
+
+  [QuarterNumber] [smallint] NOT NULL,
+  [QuarterName] [nvarchar](20) NOT NULL,
+
+  [FourMonthNumber] [smallint] NOT NULL,
+  [FourMonthName] [nvarchar](20) NOT NULL,
+
+  [SemesterNumber] [smallint] NOT NULL,
+  [SemesterName] [nvarchar](20) NOT NULL,
+
+  [Year] [smallint] NOT NULL,
+  [YearMonth] [int] NOT NULL,
+
+CONSTRAINT [PK_DimDate_Date] PRIMARY KEY CLUSTERED
+(
+[Date] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+-- Stored Procedure pPopulateDimTime:
+-- dbo.pPopolaDimTime 112, 'Italian', 20100101, 20101231
+
+CREATE procedure [dbo].[spPopulateDimTime] (
+  @dateFormat as smallint
+  ,@language as varchar(50)
+  ,@minDate int
+  ,@maxDate int
+)
+
+AS
+BEGIN
+
+--Set the language
+  if @language = 'Italian' SET LANGUAGE Italian
+  else if @language = 'us_english' SET LANGUAGE us_english
+  else if @language = 'French' SET LANGUAGE French
+  else if @language = 'Spanish' SET LANGUAGE Spanish
+  else if @language = 'German' SET LANGUAGE German
+
+--Set min & max date
+  declare @minDateInsert date
+  declare @maxDateInsert date
+
+set @minDateInsert = convert(date , cast(@minDate as varchar(8)))
+set @maxDateInsert = convert(date , cast(@maxDate as varchar(8)))
+
+
+
+--Inserisci se necessario il sid 0
+  set identity_insert dbo.DimTime on
+  if (select count(*) from dbo.DimTime where idTime = 0) = 0
+  insert into dbo.DimTime (
+    [idTime]
+    ,[Date]
+
+    ,[DayName]
+    ,[DayWeekNumber]
+    ,[DayMonthNumber]
+    ,[DayYearNumber]
+
+    ,[WeekNumber]
+
+    ,[MonthNumber]
+    ,[MonthName]
+
+    ,[QuarterNumber]
+    ,[QuarterName]
+
+    ,[FourMonthNumber]
+    ,[FourMonthName]
+
+    ,[SemesterNumber]
+    ,[SemesterName]
+
+    ,[Year]
+    ,[YearMonth]
+  )
+  values
+  (
+    0               --idTime int
+    ,'1900-01-01'   --Date date
+
+    ,'Undefined'    --dayName
+    ,0              --dayWeekNumber
+    ,0              --dayMonthNumber
+    ,0              --dayYearNumber
+
+    ,0              --weekNumber
+
+    ,0              --monthNumber
+    ,'Undefined'    --monthName
+
+    ,0              --quarterNumber
+    ,'Undefined'    --quarterName
+
+    ,0              --FourMonthNumber
+    ,'Undefined'    --FourMonthName
+
+    ,0              --SemesterNumber
+    ,'Undefined'    --SemesterName
+
+    ,0              --Year
+    ,0              --YearMonth
+  )
+  set identity_insert dbo.DimTime off
+
+
+
+
+
+
+
