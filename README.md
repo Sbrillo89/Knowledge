@@ -9,7 +9,7 @@
   - spInsert...
   - spMerge...
   - [fnSplit](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/fnSplit.sql)
-  - fnCleanCh
+  - [fnRemoveNonASCII](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/fnRemoveNonASCII.sql)
 
 ## MDX
   - [Time Measures Base](https://github.com/Sbrillo89/Knowledge/blob/master/MDX/Time%20Measures%20Base.txt)
