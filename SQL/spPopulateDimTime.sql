@@ -171,7 +171,8 @@ set @maxDateInsert = convert(date , cast(@maxDate as varchar(8)))
   select
     @minDateInsert                      --Date
 
-    ,datename(dw, @minDateInsert)       --DayName
+    ,UPPER(LEFT(datename(dw, @minDateInsert),1))
+      +SUBSTRING(datename(dw, @minDateInsert),2,LEN(datename(dw, @minDateInsert))) --DayName
     ,datepart(dw, @minDateInsert)       --DayWeekNumber
     ,datepart(dd, @minDateInsert)       --DayMonthNumber
     ,datepart(dy, @minDateInsert)       --DayYearNumber
@@ -179,7 +180,8 @@ set @maxDateInsert = convert(date , cast(@maxDate as varchar(8)))
     ,datepart(wk, @minDateInsert)       --weekYearNumber
 
     ,datepart(mm, @minDateInsert)       --monthNumber
-    ,datename(mm, @minDateInsert)       --monthName
+    ,UPPER(LEFT(datename(mm, @minDateInsert),1))
+      +SUBSTRING(datename(mm, @minDateInsert),2,LEN(datename(mm, @minDateInsert))) --monthName
 
     ,datepart(qq, @minDateInsert)       --quarterNumber
     ,datename(qq, @minDateInsert)
