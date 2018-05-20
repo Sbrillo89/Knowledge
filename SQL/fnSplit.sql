@@ -39,6 +39,8 @@ GO
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
 
+--Esempio di chiamata funzione
+
 SELECT *
 FROM DimCustomer
 WHERE Customer IN (SELECT * FROM dbo.fnSplit(@Customer,'|'))
