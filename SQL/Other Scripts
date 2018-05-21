@@ -1,0 +1,23 @@
+
+
+--Estrazione della data da Anno-Settimana
+
+  cast(DATEADD(wk, DATEDIFF(wk, 7, CAST(tab.[Anno] AS NVARCHAR(100))) + (tab.[settimana]-1), 7) as date) as [Date]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
