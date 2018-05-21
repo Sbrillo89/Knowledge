@@ -1,0 +1,8 @@
+
+--Misura filtrata per due attributi su una Dim
+
+Quantity A + B := CALCULATE(
+                            SUM('FactInvoice'[M_Quantity])
+                            ,'DimArticolo'[Articolo Gruppo] = "A" || 'DimArticolo'[Articolo Gruppo] = "B"
+)
+
