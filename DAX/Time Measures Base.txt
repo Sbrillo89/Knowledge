@@ -1,22 +1,25 @@
 
+Quantity := SUM([M_Quantity])
+
+Quantity AP := CALCULATE([Quantity],DATEADD('DimTempo'[Giorno],-1,YEAR))
+
+Quantity MP := CALCULATE([Quantity],DATEADD('DimTempo'[Giorno],-1,MONTH))
+
+Quantity YTD := TOTALYTD([Quantity],'DimTempo'[Giorno])
+
+Quantity YTD AP:= CALCULATE(CALCULATE(TOTALYTD([Quantity],'DimTempo'[Giorno])), DATEADD('DimTempo'[Giorno],-1,YEAR))
+
+Qta Budget AC vs AP := [Quantity]-[Quantity AP]
+
+Qta Budget AC vs AP % := DIVIDE([Quantity]-[Quantity AP],[Quantity])
 
 
-Qta Gestito AP:=CALCULATE([Qta Gestito],DATEADD('Dim Tempo'[Giorno],-1,YEAR))
 
-Qta Gestito MP:=CALCULATE([Qta Gestito],DATEADD('Dim Tempo'[Giorno],-1,MONTH))
+Quantity A + B := CALCULATE(
+                            SUM('FactInvoice'[M_Quantity])
+                            ,'DimArticolo'[Articolo Gruppo] = "A" || 'DimArticolo'[Articolo Gruppo] = "B"
+                           )
 
  
 
-Qta Gestito YTD:=TOTALYTD([Qta gestito],'Dim Tempo'[Giorno])
 
- 
-
-Qta Gestito YTD AP:=calculate(CALCULATE(TOTALYTD([Qta gestito],'Dim Tempo'[Giorno])), DATEADD('Dim Tempo'[Giorno],-1,YEAR))
-
- 
-
-Qta Congiunta + Selettiva:=calculate(sum('Fact Raccolta'[M Qta]),'Dim Articolo'[Articolo Gruppo] = "Congiunta" || 'Dim Articolo'[Articolo Gruppo] = "Selettiva")
-
- 
-
-Qta Budget AC vs AP %:=DIVIDE( [Qta Budget]-[Qta Budget AP],[Qta Budget])
