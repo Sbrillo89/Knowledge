@@ -1,7 +1,6 @@
 # Knowledge
 
 ## SQL
-  - spPopulateDimTempo
   - [spPopulateDimTime](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/spPopulateDimTime.sql)
   - [spCreateNA](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/spCreateNA.sql)
 
@@ -17,7 +16,7 @@
   - [Time Measures Base](https://github.com/Sbrillo89/Knowledge/blob/master/MDX/Time%20Measures%20Base.txt)
     
 ## DAX
-  - Time Measures Base
+  - [Time Measures Base](https://github.com/Sbrillo89/Knowledge/blob/master/DAX/Time%20Measures%20Base.txt)
   - [Filtered Measures](https://github.com/Sbrillo89/Knowledge/blob/master/DAX/Filtered%20Measures.txt)
 
 ## VBA
