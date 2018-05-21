@@ -18,6 +18,7 @@
     
 ## DAX
   - Time Measures Base
+  - [Filtered Measures](https://github.com/Sbrillo89/Knowledge/blob/master/DAX/Filtered%20Measures.txt)
 
 ## VBA
     
