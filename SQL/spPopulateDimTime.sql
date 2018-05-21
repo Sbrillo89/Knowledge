@@ -37,16 +37,14 @@ CONSTRAINT [PK_DimDate_Date] PRIMARY KEY CLUSTERED
 GO
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
--- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
--- Stored Procedure pPopulateDimTime:
--- dbo.spPopulateDimTime 112, 'Italian', 20100101, 20101231
+-- Stored Procedure pPopulateDimTime
 
 CREATE procedure [dbo].[spPopulateDimTime] (
   @dateFormat as smallint
   ,@language as varchar(50)
-  ,@minDate int
-  ,@maxDate int
+  --,@minDate int
+  --,@maxDate int
 )
 
 AS
@@ -59,14 +57,20 @@ BEGIN
   else if @language = 'Spanish' SET LANGUAGE Spanish
   else if @language = 'German' SET LANGUAGE German
 
---Set min & max date
+--Set parametri min & max date
   declare @minDateInsert date
   declare @maxDateInsert date
 
-set @minDateInsert = convert(date , cast(@minDate as varchar(8)))
-set @maxDateInsert = convert(date , cast(@maxDate as varchar(8)))
+--set @minDateInsert = convert(date , cast(@minDate as varchar(8)))
+--set @maxDateInsert = convert(date , cast(@maxDate as varchar(8)))
 
-
+set @minDateInsert = convert(date , cast('20010101' as varchar(8)))
+set @maxDateInsert = select max(datamax) 
+                     from (
+                        Select max([Data]) as Datamax from [db].[dbo].[vFactInvoice] 
+                        union Select max([date]) from [db].[dbo].[vFactOrders]
+                       -- union Select max([date]) from [db].[dbo].[vista]
+                         ) t
 
 --Inserisci se necessario il sid 0
   set identity_insert dbo.DimTime on
@@ -218,3 +222,17 @@ set @maxDateInsert = convert(date , cast(@maxDate as varchar(8)))
 
 END
 GO
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+
+/*
+  Call Stored Procedure Example:
+
+  1.Con Parametri Date:
+    dbo.spPopulateDimTime 112, 'Italian', 20100101, 20101231
+  
+  2.Senza Parametri Date:
+    dbo.spPopulateDimTime 112, 'Italian'
+    dbo.spPopulateDimTime 112, 'us_english'
+
+*/
