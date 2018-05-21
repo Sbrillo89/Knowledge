@@ -12,14 +12,3 @@ Quantity YTD AP:= CALCULATE(CALCULATE(TOTALYTD([Quantity],'DimTempo'[Giorno])), 
 Qta Budget AC vs AP := [Quantity]-[Quantity AP]
 
 Qta Budget AC vs AP % := DIVIDE([Quantity]-[Quantity AP],[Quantity])
-
-
-
-Quantity A + B := CALCULATE(
-                            SUM('FactInvoice'[M_Quantity])
-                            ,'DimArticolo'[Articolo Gruppo] = "A" || 'DimArticolo'[Articolo Gruppo] = "B"
-                           )
-
- 
-
-
