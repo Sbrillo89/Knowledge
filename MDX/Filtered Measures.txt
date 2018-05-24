@@ -1,0 +1,14 @@
+
+--Tutti i membri eccetto uno
+
+CREATE MEMBER CURRENTCUBE.[Measures].[Sales Codification Index]
+AS CASE
+WHEN [Measures].[Document Counter] = 0
+THEN Null
+ELSE Sum(
+     { Except([Dim Customer].[Id Customer].[Id Customer].Members, [Dim Customer].[Id Customer].[Id Customer].&[0]) },
+     [Measures].[Document Counter])/[Measures].[Document Counter]
+  END,
+FORMAT_STRING = "#,##0.00;-#,##0.00",
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Sales Codification Index' ,  ASSOCIATED_MEASURE_GROUP = 'Fact Document';   
+
