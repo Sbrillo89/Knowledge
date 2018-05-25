@@ -1,9 +1,20 @@
 
 
---Estrazione della data da Anno-Settimana
-
+-- Estrazione della data da Anno-Settimana
+GO
   cast(DATEADD(wk, DATEDIFF(wk, 7, CAST(tab.[Anno] AS NVARCHAR(100))) + (tab.[settimana]-1), 7) as date) as [Date]
 
+-- Rimozione duplicati
+
+  DELETE FROM MyTable
+  LEFT OUTER JOIN (
+    SELECT MIN(RowId) as RowId, Col1, Col2, Col3 
+    FROM MyTable 
+    GROUP BY Col1, Col2, Col3
+  ) as KeepRows ON
+    MyTable.RowId = KeepRows.RowId
+  WHERE
+    KeepRows.RowId IS NULL
 
 
 
