@@ -1,52 +1,40 @@
 
 
 -- Estrazione della data da Anno-Settimana
-GO
+
   cast(DATEADD(wk, DATEDIFF(wk, 7, CAST(tab.[Anno] AS NVARCHAR(100))) + (tab.[settimana]-1), 7) as date) as [Date]
+
 
 -- Rimozione duplicati
 
-  DELETE FROM MyTable
-  LEFT OUTER JOIN (
-    SELECT MIN(RowId) as RowId, Col1, Col2, Col3 
-    FROM MyTable 
-    GROUP BY Col1, Col2, Col3
-  ) as KeepRows ON
-    MyTable.RowId = KeepRows.RowId
-  WHERE
-    KeepRows.RowId IS NULL
+DELETE 
+FROM MyTable
+LEFT OUTER JOIN (
+                  SELECT MIN(RowId) as RowId, Col1, Col2, Col3 
+                  FROM MyTable 
+                  GROUP BY Col1, Col2, Col3
+                ) as KeepRows 
+                ON MyTable.RowId = KeepRows.RowId
+WHERE
+  KeepRows.RowId IS NULL
 
 
 -- Check Status Shrink
 
-  SELECT 
-      percent_complete
-    , start_time, status
-    , command
-    , estimated_completion_time
-    , cpu_time
-    , total_elapsed_time 
-  FROM sys.dm_exec_requests 
+SELECT 
+   percent_complete
+  ,start_time, status
+  ,command
+  ,estimated_completion_time
+  ,cpu_time
+  ,total_elapsed_time 
+FROM sys.dm_exec_requests 
 
 
 -- Check Table Lock
 
-  SELECT *  
-  FROM sys.dm_exec_requests 
-  WHERE 
-    DB_NAME(database_id) = 'DB_NAME'  -- Sostituire con il nome del DB da controllare
-    AND blocking_session_id <> 0 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+SELECT *  
+FROM sys.dm_exec_requests 
+WHERE 
+  DB_NAME(database_id) = 'DB_NAME'  -- Sostituire con il nome del DB da controllare
+  AND blocking_session_id <> 0 
