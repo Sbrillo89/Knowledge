@@ -7,12 +7,7 @@
   - [fnSplit](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/fnSplit.sql)
   - [fnRemoveNonASCII](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/fnRemoveNonASCII.sql)
 
-  - spUpdate...
-  - spGet...
-  - spInsert...
-  - spMerge...
-  
-  - Other Scripts
+  - [Other Scripts](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/Other%20Scripts)
 
 ## MDX
   - [Time Measures Base](https://github.com/Sbrillo89/Knowledge/blob/master/MDX/Time%20Measures%20Base.txt)
