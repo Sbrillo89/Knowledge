@@ -38,3 +38,93 @@ FROM sys.dm_exec_requests
 WHERE 
   DB_NAME(database_id) = 'DB_NAME'  -- Sostituire con il nome del DB da controllare
   AND blocking_session_id <> 0 
+
+-- 
+--  Conta righe per ciascuna tabella
+--
+
+CREATE procedure [dbo].[Test_ContaRighe_Tabelle_per_Schema]
+as
+
+declare @query_count nvarchar(2000)
+declare @tmp_table_name varchar(1000)
+declare @tab_risultati table (NomeTabella varchar(300), NumRighe bigint)
+declare @NumRighe bigint
+
+
+declare cur cursor for
+SELECT TABLE_CATALOG + '.' + TABLE_SCHEMA + '.' + TABLE_NAME as tabella
+FROM INFORMATION_SCHEMA.TABLES
+WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_schema='ax' 
+
+
+
+Open cur     
+ 
+Fetch Next From cur Into @tmp_table_name
+ 
+While (@@FETCH_STATUS = 0)
+begin
+	set @query_count = 'select @x = count(*) from ' + @tmp_table_name
+
+
+		 execute sp_executesql  @query_count, N'@x bigint out', @NumRighe out
+
+		insert into @tab_risultati values ( @tmp_table_name , @NumRighe)
+
+
+
+	Fetch Next From cur Into @tmp_table_name
+ 
+end 
+
+
+Close cur
+Deallocate cur
+select * from @tab_risultati
+ 
+
+GO
+
+-- 
+--  Tronca tabelle per schema
+--
+
+create procedure [dbo].[Test_Tronca_Tabelle_per_Schema]
+as
+
+declare @query_count varchar(max)
+declare @query_truncate varchar(max)
+
+declare @tmp_table_name varchar(max)
+
+
+declare cur cursor for
+SELECT TABLE_CATALOG + '.' + TABLE_SCHEMA + '.' + TABLE_NAME as tabella
+FROM INFORMATION_SCHEMA.TABLES
+WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_schema='ax'
+
+
+
+Open cur     
+ 
+Fetch Next From cur Into @tmp_table_name
+ 
+While (@@FETCH_STATUS = 0)
+begin
+	set @query_truncate = 'truncate table ' + @tmp_table_name
+	exec @query_truncate
+ 
+	Fetch Next From cur Into @tmp_table_name
+ 
+end 
+
+
+Close cur
+Deallocate cur
+ 
+GO
+
+
+
+
