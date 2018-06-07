@@ -1,4 +1,3 @@
-
 /*
   Fornito il nome dello schema come parametro
   Restituisce una tabella con il conteggio di righe di ciascuna tabella
@@ -35,4 +34,13 @@ as
 	select * from @tab_risultati
 GO
 
-[dbo].[spCountRows_TableBySchema] 'Person'
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+
+/*
+  Call Stored Procedure Example:
+  
+  [dbo].[spCountRows_TableBySchema] 'Person'
+*/
+
+
+
