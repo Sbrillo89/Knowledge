@@ -79,58 +79,155 @@ Deallocate cur
  
 GO
 
-
 --------------------------------------------------------------------
-SPAZIO OCCUPATO TABELLE
+-- SPAZIO OCCUPATO TABELLE
 
 SELECT
-
 t.NAME AS TableName,
-
 s.Name AS SchemaName,
-
 p.rows AS RowCounts,
-
 SUM(a.total_pages) * 8 / 1024 AS TotalSpaceMB,
-
 SUM(a.used_pages) * 8 / 1024 AS UsedSpaceMB,
-
 (SUM(a.total_pages) - SUM(a.used_pages)) * 8 / 1024 AS UnusedSpaceMB
-
-FROM
-
-sys.tables t
-
-INNER JOIN
-
-sys.indexes i ON t.OBJECT_ID = i.object_id
-
-INNER JOIN
-
-sys.partitions p ON i.object_id = p.OBJECT_ID AND i.index_id = p.index_id
-
-INNER JOIN
-
-sys.allocation_units a ON p.partition_id = a.container_id
-
+FROM sys.tables t
+INNER JOIN sys.indexes i
+	ON t.OBJECT_ID = i.object_id
+INNER JOIN sys.partitions p
+	ON i.object_id = p.OBJECT_ID AND i.index_id = p.index_id
+INNER JOIN sys.allocation_units a 
+	ON p.partition_id = a.container_id
 LEFT OUTER JOIN
-
-sys.schemas s ON t.schema_id = s.schema_id
-
+	sys.schemas s 
+	ON t.schema_id = s.schema_id
 WHERE
-
-t.NAME NOT LIKE 'dt%'
-
-AND t.is_ms_shipped = 0
-
-AND i.OBJECT_ID > 255
-
+	t.NAME NOT LIKE 'dt%'
+	AND t.is_ms_shipped = 0
+	AND i.OBJECT_ID > 255
 GROUP BY
-
-t.Name, s.Name, p.Rows
-
+	t.Name, s.Name, p.Rows
 ORDER BY
+	SUM(a.total_pages) desc
 
-SUM(a.total_pages) desc
 
+--------------------------------------------------------------------
+-- SP STORICIZZAZIONE TABELLA
+
+CREATE Procedure [dbo].[spStoricizzaCRM] 
+as 
+BEGIN
+
+DECLARE @Today DATE
+DECLARE @FirstDayMonth int
+DECLARE @LastSnapshot nvarchar(50)
+
+Set @Today = getdate()
+
+Set @FirstDayMonth = case when month(@Today) <> month(dateadd(d,-1,@Today)) then 1
+					  else 0
+					  end
+
+Set @LastSnapshot = (select max([VersioneSnapshot]) from [dbo].[HistoryCRM])
+--print (@LastSnapshot)
+--print ( cast(year(@Today) as nvarchar(4)) + cast(month(@Today) as nvarchar(2)) )
+
+IF(@FirstDayMonth = 1 and @LastSnapshot <> cast(year(@Today) as nvarchar(4)) + cast(month(@Today) as nvarchar(2))) --Se primo gg del mese e non esiste già lo snapshot --> lo creo
+	BEGIN
+
+		Insert Into [dbo].[HistoryCRM](
+			[DataSnapshot]
+			,[VersioneSnapshot]
+			,[CustomerSid]
+			,[Loyalty]
+			,[Spending]
+			,[SpendingEcommerce]
+			,[SpendingStore]
+		)
+		Select
+			@Today
+			,cast(year(@Today) as nvarchar(4)) + cast(month(@Today) as nvarchar(2))
+			,[Customer_SID]
+			,[LOYALTY__C]
+			,[SPENDING_FRM__C]
+			,[SPENDING_E_COMMERCE_FRM__C]
+			,[SPENDING_STORE_FRM__C]
+		from [cfg].[CRMCustomerAttributes]
+		--from [cfg].[MasterSlave]
+		where [Customer_SID] <> ''
+
+	END
+
+ELSE		--> Se non è il primo del mese oppure esiste già lo snapshot, lo aggiorno.				
+	BEGIN
+
+		-- Allineo lo Snapshot del mese corrente
+		MERGE [GZD_Stg].[dbo].[HistoryCRM] as Target --tabella nello stage
+		USING
+			(
+			Select
+				@Today							as [DataSnapshot]
+				,cast(year(@Today) as nvarchar(4)) + cast(month(@Today) as nvarchar(2)) as [VersioneSnapshot]
+				,[Customer_SID]				as [CustomerSid]
+				,[LOYALTY__C]					as [Loyalty]
+				,[SPENDING_FRM__C]				as [Spending]
+				,[SPENDING_E_COMMERCE_FRM__C]	as [SpendingEcommerce]
+				,[SPENDING_STORE_FRM__C]		as [SpendingStore]
+			--from [cfg].[MasterSlave]
+			from [cfg].[CRMCustomerAttributes]
+			where [Customer_SID] <> ''
+			) as Source
+
+			ON target.[VersioneSnapshot] = Source.[VersioneSnapshot]
+			and target.[CustomerSid] = Source.[CustomerSid]
+			
+		WHEN MATCHED 
+			AND target.[DataSnapshot]		<> source.[DataSnapshot]	
+			or target.[Loyalty]				<> source.[Loyalty]
+			or target.[Spending]			<> source.[Spending]
+			or target.[SpendingEcommerce]	<> source.[SpendingEcommerce]
+			or target.[SpendingStore]		<> source.[SpendingStore]
+			THEN
+
+		UPDATE SET
+			target.[DataSnapshot]		= source.[DataSnapshot]	
+			,target.[VersioneSnapshot]	= source.[VersioneSnapshot]
+			,target.[CustomerSid]		= source.[CustomerSid]
+			,target.[Loyalty]			= source.[Loyalty]
+			,target.[Spending]			= source.[Spending]
+			,target.[SpendingEcommerce]	= source.[SpendingEcommerce]
+			,target.[SpendingStore]		= source.[SpendingStore]
+
+		WHEN NOT MATCHED BY TARGET THEN
+		INSERT (
+				[DataSnapshot]
+				,[VersioneSnapshot]
+				,[CustomerSid]
+				,[Loyalty]
+				,[Spending]
+				,[SpendingEcommerce]
+				,[SpendingStore]
+			)
+		VALUES (
+			source.[DataSnapshot]
+			,source.[VersioneSnapshot]
+			,source.[CustomerSid]
+			,source.[Loyalty]
+			,source.[Spending]
+			,source.[SpendingEcommerce]
+			,source.[SpendingStore]
+		);
+	END
+END
+
+------------------------------------------------------------------------------------------------------------
+-- PARAMETRI PROCEDURA DATI TO SQL
+
+CREATE Procedure [dbo].[Bdg_DataToExcel] @Bu as nvarchar(255)
+										,@Region as nvarchar(255)
+										,@Agent as nvarchar(255)
+as
+SET NOCOUNT ON
+SET ANSI_WARNINGS OFF
+
+
+EXEC msdb.dbo.sp_start_job N'Bdg_ToSQL_Currency'
 
