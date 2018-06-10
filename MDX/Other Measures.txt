@@ -1,0 +1,13 @@
+
+
+-------------------------------------------------------------------------------------------------------
+
+CREATE MEMBER CURRENTCUBE.[Measures].[Cumulated Quantity Inventory]
+ AS SUM({NULL:[Dim Date].[R-YMWD].currentmember}, [Quantity - Inventory]), 
+FORMAT_STRING = "#,#", 
+VISIBLE = 1 ,  DISPLAY_FOLDER = 'Cumulated Quantity' ,  ASSOCIATED_MEASURE_GROUP = 'Fact Inventory';                                                                         
+
+--------------------------------------------------------------------------------------------------------
+
+
+
