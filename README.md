@@ -20,6 +20,7 @@
 ## DAX
   - [Time Measures Base](https://github.com/Sbrillo89/Knowledge/blob/master/DAX/Time%20Measures%20Base.txt)
   - [Filtered Measures](https://github.com/Sbrillo89/Knowledge/blob/master/DAX/Filtered%20Measures.txt)
+  - Other Measures
 
 ## VBA
   - Best Practices
