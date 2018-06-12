@@ -13,22 +13,68 @@ End Function
 
 '-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
 Sub Execute_SQL_Script()
-		TabellaSQL = "dbo.Tabella"
-		Set objConn = CreateObject("ADODB.Connection")
-		objConn.ConnectionString = fnConnectionStringSQL
-		objConn.Open
-		objConn.Execute "truncate table " & TabellaSQL
-		objConn.Close
-		Set objConn = Nothing
+	TabellaSQL = "dbo.Tabella"
+	Set objConn = CreateObject("ADODB.Connection")
+	objConn.ConnectionString = fnConnectionStringSQL
+	
+	objConn.Open
+	objConn.Execute "truncate table " & TabellaSQL
+	
+	objConn.Close
+	Set objConn = Nothing
 End Sub
 
 '-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+Sub FromSQL()
+	Set objConn = CreateObject("ADODB.Connection")
+	Set objRec = CreateObject("ADODB.Recordset")
+	objConn.ConnectionString = fconnString
+	objConn.Open
+	
+	Col1 = "Descrizione"
+    Col2 = "Codice"
+	TabellaSQL = "dbo.Tabella"
 
-'FromSQL
+    'Recupera dati da SQL
+    objRec.Open "SELECT " & Col1 & ", " & Col2 & " FROM " & TabellaSQL, objConn
+	
+	If Not (objRec.BOF And objRec.EOF) Then
+    ActiveSheet.Range("F6").CopyFromRecordset objRec
+    End If
+	
+	objRec.Close
+    objConn.Close
+    Set objConn = Nothing
+    Set objRec = Nothing
+End Sub
 
 '-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+Sub ToSQL()
+	Set objConn = CreateObject("ADODB.Connection")
+	Foglio = "NomeFoglioExcel"
+    	TabellaSQL = "dbo.Tabella"
+	
+	objConn.ConnectionString = fnConnectionStringSQL
+    objConn.Open
+	
+    iRowNo = 6
+    With Sheets(Foglio)
+    'Loop until empty cell in first column
+        Do Until .Cells(iRowNo, 5) = ""
+            a = Replace(.Cells(iRowNo, 5), "'", "''")
+            b = Replace(.Cells(iRowNo, 6), "'", "''")
+            c = Replace(.Cells(iRowNo, 7), "'", "''")
 
-'ToSQL
+            'Insert Into Tabella
+            On Error Resume Next
+            objConn.Execute "insert into " & TabellaSQL & " (Speciale, SpecialeDescrizione, SpecialeCodice) values ('" & a & "', '" & b & "', '" & c & "')"
+
+            iRowNo = iRowNo + 1
+        Loop
+        objConn.Close
+        Set objConn = Nothing
+    End With
+End Sub
 
 '-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
 
