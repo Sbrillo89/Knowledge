@@ -24,3 +24,4 @@
 
 ## VBA
   - Best Practices
+  - [SQL Interactions](https://github.com/Sbrillo89/Knowledge/blob/master/VBA/SQL%20Interactions.txt)
