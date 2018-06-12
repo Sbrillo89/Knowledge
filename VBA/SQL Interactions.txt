@@ -32,12 +32,12 @@ Sub FromSQL()
 	objConn.Open
 	
 	Col1 = "Descrizione"
-    Col2 = "Codice"
+    	Col2 = "Codice"
 	TabellaSQL = "dbo.Tabella"
 
     'Recupera dati da SQL
     objRec.Open "SELECT " & Col1 & ", " & Col2 & " FROM " & TabellaSQL, objConn
-	
+
 	If Not (objRec.BOF And objRec.EOF) Then
     ActiveSheet.Range("F6").CopyFromRecordset objRec
     End If
