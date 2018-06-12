@@ -1,0 +1,28 @@
+ -- WIP --
+
+Public Function fnConnectionStringSQL() As String
+    
+    Server = "istanzaSQLserver"
+    Db = "databasename"
+    User = "user"
+    pwd = "password"
+    
+    fnConnectionStringSQL = "Provider=sqloledb;Server=" & Server & ";Database=" & Db & ";User Id=" & User & ";Password=" & pwd & ""
+    
+End Function
+
+'-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+'FromSQL
+
+'-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+'ToSQL
+
+'-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+'Exec Stored Procedure con parametri
+
+'-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+'FromSQL Exec Stored Procedure con parametri
