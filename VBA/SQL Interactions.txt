@@ -82,4 +82,47 @@ End Sub
 
 '-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
 
-'FromSQL Exec Stored Procedure con parametri
+'FromSQL Exec Stored Procedure con parametri (!!! WIP DA SISTEMARE !!!)
+Sub InviaDatiSQL_WriteToSQLMaschera()
+'Dichiarazione variabili
+    Dim mCol, mRow, iCols, Header As Integer
+    Dim spName, ServerName, DbName, ConnectionString, SheetName, TableName, User, Password As String
+    Dim con As ADODB.Connection
+    Dim cmd As ADODB.Command
+    Dim rs As ADODB.Recordset
+    Dim WSP1 As Worksheet
+    Dim rngRange, rngTable As Range
+    Set con = New ADODB.Connection
+    Set cmd = New ADODB.Command
+    Set rs = New ADODB.Recordset
+    
+'IMPOSTAZIONE PARAMETRI
+    ServerName = ""       'Nome server
+    DbName = ""          'Nome database
+    spName = "dbo.pRunXlsToBdg"     'Nome Stored Procedure da lanciare
+    User = ""            'Nome utente
+    Password = ""      'Password utente
+
+'--------------START--------------
+
+'Log into our SQL Server, and run the Stored Procedure
+    ConnectionString = "Provider=SQLOLEDB;Data Source=" & ServerName & ";Initial Catalog=" & DbName & ";User Id=" & User & ";Password=" & Password & ";"
+    con.Open ConnectionString
+    cmd.ActiveConnection = con
+    
+    bu = Worksheets("Bdg_Input").Range("H7").Value
+    region = Worksheets("Bdg_Input").Range("H8").Value
+    agent = Worksheets("Bdg_Input").Range("H9").Value
+    
+    cmd.Parameters.Append cmd.CreateParameter("Bu", adLongVarChar, adParamInput, 255, bu)
+    cmd.Parameters.Append cmd.CreateParameter("Region", adLongVarChar, adParamInput, 255, region)
+    cmd.Parameters.Append cmd.CreateParameter("Agent", adLongVarChar, adParamInput, 255, agent)
+    
+    cmd.CommandText = spName
+    Set rs = cmd.Execute(, , adCmdStoredProc)
+
+    Set cmd = Nothing
+    con.Close
+    Set con = Nothing
+
+End Sub
