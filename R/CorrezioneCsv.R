@@ -1,6 +1,7 @@
 
+# Correzione del file csv per caricarlo correttamente su AzureML
 
-FileName <- 'kering dataset Sku-Channel.csv'
+FileName <- 'Dataset.csv'
 getwd()
 dir <- getwd()
 
