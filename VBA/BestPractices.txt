@@ -1,4 +1,13 @@
 
+Nella macro del bottone che esegue i comandi, a monte di tutto:
+  Application.ScreenUpdating = False
+  Application.EnableEvents = False
+  ...
+  Application.EnableEvents = True
+  Application.ScreenUpdating = True
+  
+  
+
 Application.Calculation = xlCalculationManual 
 turns off auto-calculations. 
 This is essential when your workbook has a lot of formulas and you are transferring new data to these cells.
