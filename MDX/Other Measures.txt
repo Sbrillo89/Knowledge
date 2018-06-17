@@ -9,5 +9,65 @@ VISIBLE = 1 ,  DISPLAY_FOLDER = 'Cumulated Quantity' ,  ASSOCIATED_MEASURE_GROUP
 
 --------------------------------------------------------------------------------------------------------
 
+Misura filtrata base:
 
+([Measures].[Avg Ticket],[Dim Customer].[Customer Flag Domestic Foreign].&[Domestic])
+
+ 
+
+Misura filtrada DateFrom-DateTo:
+
+SUM({STRTOMEMBER(@DateFrom): STRTOMEMBER(@DimDateDate)},[Measures].[Quantity Inventory])
+
+ 
+
+ 
+
+ 
+
+Quantità Stock:
+
+SUM({NULL:[Dim Tempo].[YMD].currentmember}, [Measures].[Quantità])
+
+ 
+
+Quantità ultimi 12 mesi:
+
+SUM({[Dim Tempo].[YMD].CurrentMember.lag(11) : [Dim Tempo].[YMD].CurrentMember}, [Measures].[Quantità])
+
+ 
+
+Rolling 12M venduto:
+
+SUM({[Dim Tempo].[YMD].CurrentMember.lag(11) : [Dim Tempo].[YMD].CurrentMember}, [Measures].[Measures].[Rolling 12M Venduto Step 1])
+
+ 
+
+Rolling 12M venduto Step 1
+
+sum({[Fact Warehouse].[Tipo Registrazione].[ConsumoAssemblaggio],[Fact Warehouse].[Tipo Registrazione].[Vendita]},[Measures].[Measures].[Valore Magazzino] ) * (-1)
+
+ 
+
+Indice Rotazione:
+
+CASE
+
+       WHEN  [Measures].[Valore Magazzino] = 0
+
+       THEN Null
+
+       ELSE [Measures].[Rolling 12M Venduto] / ABS([Measures].[Valore Magazzino])
+
+       END
+
+ 
+
+ 
+
+SSRS:
+
+default value for Date parameter
+
+="[Dim Date].[Date].&[" + Format(CDate(DateAdd(DateInterval.Year, -1, today())),"yyyy-MM-dd") + "T00:00:00]"
 
