@@ -1,0 +1,6 @@
+Net Net:= 
+  if(HASONEVALUE(OrizzonteTemporale[Orizzonte Temporale])
+    ;switch(values(OrizzonteTemporale[Orizzonte Temporale])
+      ;"Puntuale";[Net Net P]
+      ;"Progressivo alla data";[Net Net YTD])
+    ;0)
