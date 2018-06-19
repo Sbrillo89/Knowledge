@@ -45,3 +45,9 @@ turns off Excel’s recalculation of page breaks each time the count of rows or 
     tbl.DataBodyRange.Rows(1).ClearContents
 
 
+
+    If (OptionButton_NewBudget.Value = True) Then
+        messageReturn = MsgBox(vbCrLf & "Warning!" & vbCrLf & vbCrLf & "The current budget session will be lost." & vbCrLf & vbCrLf & "Continue?", vbYesNo + vbExclamation, "New Budget Session")
+        If messageReturn <> vbYes Then
+        Exit Sub
+        End If
