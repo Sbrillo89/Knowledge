@@ -26,5 +26,6 @@
   - [CorrezioneCsv](https://github.com/Sbrillo89/Knowledge/blob/master/R/CorrezioneCsv.R)
 
 ## VBA
-  - Best Practices
+  - [Best Practices](https://github.com/Sbrillo89/Knowledge/blob/master/VBA/BestPractices.md)
   - [SQL Interactions](https://github.com/Sbrillo89/Knowledge/blob/master/VBA/SQL%20Interactions.txt)
+  - Other things
