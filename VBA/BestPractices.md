@@ -24,5 +24,5 @@ If you do not need to show users the different statuses while code is running, i
 **Application.DisplayAlerts** turns off messages and alerts when code is running.  
 If you are running a process that would normally cause Excel to display an alert to the user, you can set this to false if you do not want the user to see alerts.
 
-**ActiveSheet.DisplayPageBreaks** turns off Excel’s recalculation of page breaks.
+**ActiveSheet.DisplayPageBreaks** turns off Excel’s recalculation of page breaks.  
 Each time the count of rows or columns is modified Excel recalculate page breaks.
