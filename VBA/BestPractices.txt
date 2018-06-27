@@ -1,11 +1,14 @@
 
-Nella macro del bottone che esegue i comandi, a monte di tutto:
+Nella macro del bottone che esegue i comandi, a monte di tutto:  
   Application.ScreenUpdating = False
   Application.EnableEvents = False
-  ...
-  Application.EnableEvents = True
+  Application.DisplayStatusBar = False
+  Application.Calculation = xlCalculationManual
+    ...
   Application.ScreenUpdating = True
-  
+  Application.EnableEvents = True
+  Application.DisplayStatusBar = True
+  Application.Calculation = xlCalculationAuto
   
 
 Application.Calculation = xlCalculationManual 
