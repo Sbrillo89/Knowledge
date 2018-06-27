@@ -11,9 +11,7 @@ Application.EnableEvents = True
 Application.DisplayStatusBar = True  
 Application.Calculation = xlCalculationAuto  
 
-
-
-  
+&nbsp;
 
 **Application.Calculation** turns off auto-calculations.  
 This is essential when your workbook has a lot of formulas and you are transferring new data to these cells.  
