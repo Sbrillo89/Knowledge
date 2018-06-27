@@ -5,7 +5,7 @@ Application.ScreenUpdating = False
 Application.EnableEvents = False  
 Application.DisplayStatusBar = False  
 Application.Calculation = xlCalculationManual  
-    ...  
+&nbsp; ...  
 Application.ScreenUpdating = True  
 Application.EnableEvents = True  
 Application.DisplayStatusBar = True  
