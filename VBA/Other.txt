@@ -1,0 +1,25 @@
+
+--Cancella righe da una tabella:
+
+'Remove any values in the cells where we want to put our Stored Procedure's results.
+    'Set rngRange = Range(Cells(mRow, mCol), Cells(Rows.Count, 1)).EntireRow
+    'rngRange.ClearContents
+      Dim tbl As ListObject
+    Set tbl = ActiveSheet.ListObjects(TableName)
+    'Delete all table rows except first row
+      With tbl.DataBodyRange
+        If .Rows.Count > 1 Then
+          .Offset(1, 0).Resize(.Rows.Count - 1, .Columns.Count).Rows.Delete
+        End If
+      End With
+    'Clear out data from first table row
+    tbl.DataBodyRange.Rows(1).ClearContents
+
+
+--Yes/No Question
+
+    If (OptionButton_NewBudget.Value = True) Then
+        messageReturn = MsgBox(vbCrLf & "Warning!" & vbCrLf & vbCrLf & "The current budget session will be lost." & vbCrLf & vbCrLf & "Continue?", vbYesNo + vbExclamation, "New Budget Session")
+        If messageReturn <> vbYes Then
+        Exit Sub
+        End If
