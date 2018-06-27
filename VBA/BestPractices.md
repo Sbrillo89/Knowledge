@@ -1,4 +1,6 @@
 
+##Ottimizzazione del codice:
+___
 Nella macro del bottone che esegue i comandi, a monte di tutto:  
   Application.ScreenUpdating = False
   Application.EnableEvents = False
@@ -29,6 +31,13 @@ you can set this to false if you do not want the user to see alerts.
 
 ActiveSheet.DisplayPageBreaks = False 
 turns off Excel’s recalculation of page breaks each time the count of rows or columns is modified.
+
+
+
+
+
+
+
 
 
 --Cancella righe da una tabella:
