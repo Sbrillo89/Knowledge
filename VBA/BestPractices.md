@@ -1,5 +1,5 @@
 
-##Ottimizzazione del codice:
+## Ottimizzazione del codice:
 ___
 Nella macro del bottone che esegue i comandi, a monte di tutto:  
   Application.ScreenUpdating = False
