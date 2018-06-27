@@ -1,10 +1,11 @@
 
 ## Ottimizzazione del codice:
 ___
-Nella macro del bottone che esegue i comandi, a monte di tutto:  
-  Application.ScreenUpdating = False
-  Application.EnableEvents = False
-  Application.DisplayStatusBar = False
+Application.ScreenUpdating = False
+Application.EnableEvents = False
+Application.DisplayStatusBar = False
+
+
   Application.Calculation = xlCalculationManual
     ...
   Application.ScreenUpdating = True
