@@ -1,9 +1,9 @@
 
 ## Ottimizzazione del codice:
 ___
-Application.ScreenUpdating = False
-Application.EnableEvents = False
-Application.DisplayStatusBar = False
+Application.ScreenUpdating = False  
+Application.EnableEvents = False  
+Application.DisplayStatusBar = False  
 
 
   Application.Calculation = xlCalculationManual
