@@ -10,6 +10,9 @@ Application.ScreenUpdating = True
 Application.EnableEvents = True  
 Application.DisplayStatusBar = True  
 Application.Calculation = xlCalculationAuto  
+
+
+
   
 
 **Application.Calculation** turns off auto-calculations.  
