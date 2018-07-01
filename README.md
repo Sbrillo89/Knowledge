@@ -1,11 +1,13 @@
 # Knowledge
 
 ## SQL
+
+### Stored Procedures
   - [spPopulateDimTime](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/spPopulateDimTime.sql)
   - [spCreateNA](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/spCreateNA.sql)
-  
   - [spCountRows_TableBySchema](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/spCountRows_TableBySchema)
 
+### Functions
   - [fnSplit](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/fnSplit.sql)
   - [fnRemoveNonASCII](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/fnRemoveNonASCII.sql)
   - [fnEaster](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/fnEaster.sql)
