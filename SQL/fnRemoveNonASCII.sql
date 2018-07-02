@@ -23,7 +23,7 @@ BEGIN
     BEGIN
 
       SET @nchar = SUBSTRING(@nstring, @position, 1)
-      IF UNICODE(@nchar) between 32 and 255
+      IF UNICODE(@nchar) between 32 and 255     --oppure: 64335 --FB4F
           SET @Result = @Result + @nchar
 
       SET @position = @position + 1
