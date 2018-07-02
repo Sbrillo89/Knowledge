@@ -1,10 +1,12 @@
 
 
+--------------------------------------------------------------------
 -- Estrazione della data da Anno-Settimana
 
   cast(DATEADD(wk, DATEDIFF(wk, 7, CAST(tab.[Anno] AS NVARCHAR(100))) + (tab.[settimana]-1), 7) as date) as [Date]
 
 
+--------------------------------------------------------------------
 -- Rimozione duplicati
 
 DELETE 
@@ -19,6 +21,7 @@ WHERE
   KeepRows.RowId IS NULL
 
 
+--------------------------------------------------------------------
 -- Check Status Shrink
 
 SELECT 
@@ -30,7 +33,7 @@ SELECT
   ,total_elapsed_time 
 FROM sys.dm_exec_requests 
 
-
+--------------------------------------------------------------------
 -- Check Table Lock
 
 SELECT *  
@@ -40,9 +43,8 @@ WHERE
   AND blocking_session_id <> 0 
 
 
--- 
+--------------------------------------------------------------------
 --  Tronca tabelle per schema
---
 
 create procedure [dbo].[Test_Tronca_Tabelle_per_Schema]
 as
@@ -57,8 +59,6 @@ declare cur cursor for
 SELECT TABLE_CATALOG + '.' + TABLE_SCHEMA + '.' + TABLE_NAME as tabella
 FROM INFORMATION_SCHEMA.TABLES
 WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_schema='ax'
-
-
 
 Open cur     
  
@@ -193,190 +193,13 @@ END
 -- PARAMETRI PROCEDURA DATI TO SQL
 
 CREATE Procedure [dbo].[Bdg_DataToExcel] @Bu as nvarchar(255)
-										,@Region as nvarchar(255)
-										,@Agent as nvarchar(255)
+,@Region as nvarchar(255)
+,@Agent as nvarchar(255)
 as
 SET NOCOUNT ON
 SET ANSI_WARNINGS OFF
 
-
 EXEC msdb.dbo.sp_start_job N'Bdg_ToSQL_Currency'
-
-
-
-------------------------------------------------------------------------------------------------------------
--- VISTE CREAZIONE DATE RANGE
-
-create view [bi].[vExchangeRateDbwin_step1]
-as
-select
-	[cod_divisa]
-	,[cod_divisa_inc]
-	,[data_cambio]
-	,[coeff_cambio] as ExchangeRate
-	,row_number() over (partition by [cod_divisa],[cod_divisa_inc] 
-						order by [data_cambio] ) as RN
-from [DbWin_dw].[vicini].[wl0_tbdivcambi]
-where cod_divisa = 'EUR'
-GO
-
-
-CREATE view [bi].[vExchangeRateDbwin]
-as
-select --calcolo del range di validità DateFrom-DateTo 
-		s1.cod_divisa
-		,s1.cod_divisa_inc
-		,s1.ExchangeRate
-		,s1.data_cambio as DateFrom
-		,DATEADD (day , -1 ,isnull(s2.data_cambio,dateadd(dd, +1, getdate()))) as DateTo
-from [bi].[vExchangeRateDbwin_step1] s1
-left outer join [bi].[vExchangeRateDbwin_step1] s2
-	on s1.cod_divisa = s2.cod_divisa
-	and s1.cod_divisa_inc = s2.cod_divisa_inc
-	and s1.RN = s2.RN-1
-
-
-------------------------------------------------------------------------------------------------------------
--- VISTE CREAZIONE RFM
-
-CREATE VIEW [ml].[vCCBehaviour_M]
-as
-select 
-	f.customerid   as CustomerID 
-	   --mam 17/11/2016: azzero la monetary di clienti che ComproRendo e hanno monetary minuscola a causa dei tassi di cambio
-	   ,case
-			when sum(f.SalesNetValueTotalNoTAXLCY) = 0 then 0
-			else sum(f.SalesNetValueTotalNoTAX)
-		end as Monetary
-from [dbo].[FactSales] f
-
-left outer join [dbo].[DimCustomer] c
-	on f.customerid = c.customerId
-where
-	--FILTRI USATI NEI REPORT 061
-		f.[SalesRowTypeCode] = 'RS'
-	--FILTRI USATI NEI REPORT 435
-		AND f.SalesCausalGroup in ('Bargain','Normal','Event Sale')
-		AND f.customerid <> 0
-		AND c.customerTypeCode = '01'
-group by f.customerid
-
-CREATE VIEW [ml].[vCCBehaviour_R]
-as
-select 
-		f.customerid   as CustomerID 
-		,max(salesdate) as LastPurchaseDate
-		,datediff(mm,max(salesdate),getdate())+1 as Recency
-from [dbo].[FactSales] f
-
-left outer join [dbo].[DimCustomer] c
-	on f.customerid = c.customerId
-
-where
-	--FILTRI USATI NEI REPORT 061
-		f.[SalesRowTypeCode] = 'RS'
-	--FILTRI USATI NEI REPORT 435
-		AND f.SalesCausalGroup in ('Bargain','Normal','Event Sale')
-		AND f.customerid <> 0
-		AND c.customerTypeCode = '01'
-	--ESCLUSIONE DEI RESI--
-	    AND f.SalesNetValueTotalNoTAX > 0 
-group by f.customerid
-
-CREATE VIEW [ml].[vCCBehaviour_F]
-as
-Select 
-
-n.customerid
-,n.Numeratore
-,d.Denominatore
-,cast((cast(n.Numeratore as float) / cast( d.Denominatore as Float)) as numeric(18,4)) as Frequency
-
-from 
-(
---NUMERATORE
-select a.customerid
-,count(*) as Numeratore
-
-from(
-
-select    
-	f.customerid as CustomerID
-	,f.storeid
-	,f.salesdate
-
-from [dbo].[FactSales] f
-left outer join [dbo].[DimCustomer] c
-	on f.customerid = c.customerId
-
-where 
-		--FILTRI USATI NEI REPORT 061
-		 f.[SalesRowTypeCode] = 'RS'
-		--FILTRI USATI NEI REPORT 435
-		AND f.SalesCausalGroup in ('Bargain','Normal','Event Sale')
-		AND f.customerid <> 0
-		AND c.customerTypeCode = '01'
-        AND f.SalesNetValueTotalNoTAX >0 --Escludiamo transazioni di solo reso
-group by f.customerid
-        ,f.storeid
-	    ,f.salesdate
-) a
-
-group by a.customerid
-)n
-
-left outer join 
-(
---DENOMINATORE
-select 
-		f.customerid   as CustomerID 
-		,min(salesdate) as FirstPurchaseDate
-		,datediff(mm,min(salesdate),getdate())+1 as Denominatore
-from [dbo].[FactSales] f
-
-left outer join [dbo].[DimCustomer] c
-	on f.customerid = c.customerId
-
-where
-	--FILTRI USATI NEI REPORT 061
-		f.[SalesRowTypeCode] = 'RS'
-	--FILTRI USATI NEI REPORT 435
-		AND f.SalesCausalGroup in ('Bargain','Normal','Event Sale')
-		AND f.customerid <> 0
-		AND c.customerTypeCode = '01'
-	--ESCLUSIONE DEI RESI--
-	    AND f.SalesNetValueTotalNoTAX > 0 
-group by f.customerid
-) d
-
-on n.CustomerID = d.CustomerID
-
-CREATE view [ml].[vCCBehaviour_RFM]
-as
-select
-
-m.customerid
-
-,r.Recency
-,f.Frequency
-,case 
-		when m.Monetary < 10 then 0
-		else m.Monetary 
-	end as Monetary
-
---,f.Denominatore
-
-
-from [ml].[vCCBehaviour_M] m
-
-left outer join [ml].[vCCBehaviour_R] r
-	on m.customerid = r.customerid
-
-left outer join [ml].[vCCBehaviour_F] f
-	on m.customerid = f.customerid
-
-where r.recency is not NULL
-
 
 ------------------------------------------------------------------------------------------------------------
 -- 
