@@ -7,13 +7,15 @@ Estrae la lista delle tabelle di un DB con:
 */
 
 SELECT
-  t.NAME        as TableName
-  ,s.Name       as SchemaName
-  ,p.rows       as RowCounts
-  ,SUM(a.total_pages) * 8 / 1024  as TotalSpaceMB
-  ,SUM(a.used_pages) * 8 / 1024   as UsedSpaceMB
+  t.NAME        					as TableName
+  ,s.Name       					as SchemaName
+  ,p.rows      						as RowCounts
+  ,SUM(a.total_pages) * 8 / 1024  			as TotalSpaceMB
+  ,SUM(a.used_pages) * 8 / 1024   			as UsedSpaceMB
   ,(SUM(a.total_pages) - SUM(a.used_pages)) * 8 / 1024  as UnusedSpaceMB
+			     
 FROM sys.tables t
+			     
 INNER JOIN sys.indexes i
 	ON t.OBJECT_ID = i.object_id
 INNER JOIN sys.partitions p
@@ -30,6 +32,6 @@ WHERE
 GROUP BY
 	t.Name, s.Name, p.Rows
 ORDER BY
-  SUM(a.total_pages) desc
+	SUM(a.total_pages) desc
   
   
