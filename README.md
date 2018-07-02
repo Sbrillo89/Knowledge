@@ -14,6 +14,7 @@
  
 #### Query e Views
   - [Select_TableSpace](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/Select_TableSpace.sql)
+  - [Select_TableLock](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/Select_TableLock.sql)
   - [View_DateRangeCreation](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/View_DateRangeCreation.sql)
   - [View_RFM](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/View_RFM.sql) _WIP
   
