@@ -11,7 +11,6 @@
   - [fnSplit](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/fnSplit.sql)
   - [fnRemoveNonASCII](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/fnRemoveNonASCII.sql)
   - [fnEaster](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/fnEaster.sql)
-
   - [Other Scripts](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/Other%20Scripts)
 
 ## MDX
