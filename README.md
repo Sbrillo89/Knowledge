@@ -21,21 +21,21 @@
   - [View_RFM](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/View_RFM.sql) _WIP
   
 #### WIP
-  - [Other Scripts](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/Other%20Scripts)  
+  - [Other Scripts](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/Other%20Scripts) _WIP
 
 ## MDX
   - [Time Measures Base](https://github.com/Sbrillo89/Knowledge/blob/master/MDX/Time%20Measures%20Base.txt)
   - [Filtered Measures](https://github.com/Sbrillo89/Knowledge/blob/master/MDX/Filtered%20Measures.txt) _WIP
   
 #### WIP
-  - [Other Measures](https://github.com/Sbrillo89/Knowledge/blob/master/MDX/Other%20Measures.txt)  
+  - [Other Measures](https://github.com/Sbrillo89/Knowledge/blob/master/MDX/Other%20Measures.txt) _WIP
     
 ## DAX
   - [Time Measures Base](https://github.com/Sbrillo89/Knowledge/blob/master/DAX/Time%20Measures%20Base.txt)
   - [Filtered Measures](https://github.com/Sbrillo89/Knowledge/blob/master/DAX/Filtered%20Measures.txt) _WIP
   
 #### WIP
-  - Other Measures  
+  - Other Measures _WIP 
   
 ## R
   - [CorrezioneCsv](https://github.com/Sbrillo89/Knowledge/blob/master/R/CorrezioneCsv.R)  
@@ -43,7 +43,7 @@
 ## VBA
   - [Best Practices](https://github.com/Sbrillo89/Knowledge/blob/master/VBA/BestPractices.md)
   - [SQL Interactions](https://github.com/Sbrillo89/Knowledge/blob/master/VBA/SQL%20Interactions.txt) _WIP
-  - [Custom Ribbon](https://github.com/Sbrillo89/Knowledge/blob/master/VBA/CustomRibbon.md)
+  - [Custom Ribbon](https://github.com/Sbrillo89/Knowledge/blob/master/VBA/CustomRibbon.md) _WIP
   
 #### WIP
-  - [Other](https://github.com/Sbrillo89/Knowledge/blob/master/VBA/Other.txt)
+  - [Other](https://github.com/Sbrillo89/Knowledge/blob/master/VBA/Other.txt) _WIP
