@@ -60,10 +60,10 @@ CREATE VIEW [ml].[vCCBehaviour_F]
 as
 Select 
 
-n.customerid
+n.customerid	as CustomerID 
 ,n.Numeratore
 ,d.Denominatore
-,cast((cast(n.Numeratore as float) / cast( d.Denominatore as Float)) as numeric(18,4)) as Frequency
+,cast((cast(n.Numeratore as float) / cast(d.Denominatore as Float)) as numeric(18,4)) as Frequency
 
 from 
 (
@@ -83,13 +83,7 @@ left outer join [dbo].[DimCustomer] c
 	on f.customerid = c.customerId
 
 where 
-		--FILTRI USATI NEI REPORT 061
-		 f.[SalesRowTypeCode] = 'RS'
-		--FILTRI USATI NEI REPORT 435
-		AND f.SalesCausalGroup in ('Bargain','Normal','Event Sale')
-		AND f.customerid <> 0
-		AND c.customerTypeCode = '01'
-        AND f.SalesNetValueTotalNoTAX >0 --Escludiamo transazioni di solo reso
+	1=1
 group by f.customerid
         ,f.storeid
 	    ,f.salesdate
