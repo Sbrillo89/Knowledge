@@ -1,19 +1,4 @@
 
---------------------------------------------------------------------
--- Rimozione duplicati
-
-DELETE 
-FROM MyTable
-LEFT OUTER JOIN (
-                  SELECT MIN(RowId) as RowId, Col1, Col2, Col3 
-                  FROM MyTable 
-                  GROUP BY Col1, Col2, Col3
-                ) as KeepRows 
-                ON MyTable.RowId = KeepRows.RowId
-WHERE
-  KeepRows.RowId IS NULL
-
-
 
 --------------------------------------------------------------------
 --  Tronca tabelle per schema
