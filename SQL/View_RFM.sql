@@ -14,7 +14,6 @@ Input per modello di clusterizzazione.
 	Questa vista calcola la variabile Frequency (F)
 	(F):
 	
-
 [ml].[vCCBehaviour_RFM]:
 	Questa vista aggrega le 3 precedenti.
 
@@ -65,57 +64,44 @@ n.customerid	as CustomerID
 ,d.Denominatore
 ,cast((cast(n.Numeratore as float) / cast(d.Denominatore as Float)) as numeric(18,4)) as Frequency
 
-from 
-(
---NUMERATORE
-select a.customerid
-,count(*) as Numeratore
+from (	--NUMERATORE: Conteggio delle visite dei clienti
+	select a.customerid
+	,count(*) as Numeratore
 
-from(
+	from(
+		select    --Seleziono tutte le combinazioni (chiavi) che definiscono la "visita" dei clienti
+		f.customerid as CustomerID
+		,f.storeid
+		,f.salesdate
 
-select    
-	f.customerid as CustomerID
-	,f.storeid
-	,f.salesdate
+		from [dbo].[FactSales] f
+		left outer join [dbo].[DimCustomer] c
+			on f.customerid = c.customerId
+		where 
+			1=1
+		group by 
+			f.customerid
+			,f.storeid
+			,f.salesdate
+		) a
+	group by a.customerid
+	)n
 
-from [dbo].[FactSales] f
-left outer join [dbo].[DimCustomer] c
-	on f.customerid = c.customerId
-
-where 
-	1=1
-group by f.customerid
-        ,f.storeid
-	    ,f.salesdate
-) a
-
-group by a.customerid
-)n
-
-left outer join 
-(
---DENOMINATORE
-select 
-		f.customerid   as CustomerID 
-		,min(salesdate) as FirstPurchaseDate
+left outer join (  --DENOMINATORE: Numero di mesi trascorsi tra oggi e data del primo acquisto
+	select 
+		f.customerid   				 as CustomerID 
+		,min(salesdate) 			 as FirstPurchaseDate
 		,datediff(mm,min(salesdate),getdate())+1 as Denominatore
-from [dbo].[FactSales] f
+	from [dbo].[FactSales] f
 
-left outer join [dbo].[DimCustomer] c
-	on f.customerid = c.customerId
+	left outer join [dbo].[DimCustomer] c
+		on f.customerid = c.customerId
 
-where
-	--FILTRI USATI NEI REPORT 061
-		f.[SalesRowTypeCode] = 'RS'
-	--FILTRI USATI NEI REPORT 435
-		AND f.SalesCausalGroup in ('Bargain','Normal','Event Sale')
-		AND f.customerid <> 0
-		AND c.customerTypeCode = '01'
-	--ESCLUSIONE DEI RESI--
-	    AND f.SalesNetValueTotalNoTAX > 0 
-group by f.customerid
+	where
+		1=1
+	group by 
+		f.customerid
 ) d
-
 on n.CustomerID = d.CustomerID
 
 	
