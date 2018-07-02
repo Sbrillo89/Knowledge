@@ -35,7 +35,7 @@
   - [Filtered Measures](https://github.com/Sbrillo89/Knowledge/blob/master/DAX/Filtered%20Measures.txt) _WIP
   
 #### WIP
-  - Other Measures _WIP 
+  - [Other Measures](https://github.com/Sbrillo89/Knowledge/blob/master/DAX/OtherMeasures.txt) _WIP 
   
 ## R
   - [CorrezioneCsv](https://github.com/Sbrillo89/Knowledge/blob/master/R/CorrezioneCsv.R)  
