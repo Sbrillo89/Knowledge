@@ -10,7 +10,10 @@
 #### Functions
   - [fnSplit](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/fnSplit.sql)
   - [fnRemoveNonASCII](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/fnRemoveNonASCII.sql)
-  - [fnEaster](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/fnEaster.sql)  
+  - [fnEaster](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/fnEaster.sql)
+ 
+#### Query
+  - [Select_TableSpace](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/Select_TableSpace.sql)
   
 #### WIP
   - [Other Scripts](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/Other%20Scripts)  
