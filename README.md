@@ -12,8 +12,9 @@
   - [fnRemoveNonASCII](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/fnRemoveNonASCII.sql)
   - [fnEaster](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/fnEaster.sql)
  
-#### Query
+#### Query e Views
   - [Select_TableSpace](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/Select_TableSpace.sql)
+  - [View_DateRangeCreation](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/View_DateRangeCreation.sql)
   
 #### WIP
   - [Other Scripts](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/Other%20Scripts)  
