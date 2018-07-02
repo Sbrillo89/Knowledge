@@ -21,27 +21,6 @@ WHERE
   KeepRows.RowId IS NULL
 
 
---------------------------------------------------------------------
--- Check Status Shrink
-
-SELECT 
-   percent_complete
-  ,start_time, status
-  ,command
-  ,estimated_completion_time
-  ,cpu_time
-  ,total_elapsed_time 
-FROM sys.dm_exec_requests 
-
---------------------------------------------------------------------
--- Check Table Lock
-
-SELECT *  
-FROM sys.dm_exec_requests 
-WHERE 
-  DB_NAME(database_id) = 'DB_NAME'  -- Sostituire con il nome del DB da controllare
-  AND blocking_session_id <> 0 
-
 
 --------------------------------------------------------------------
 --  Tronca tabelle per schema
