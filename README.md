@@ -19,14 +19,14 @@
   - [Time Measures Base](https://github.com/Sbrillo89/Knowledge/blob/master/MDX/Time%20Measures%20Base.txt)
   - [Filtered Measures](https://github.com/Sbrillo89/Knowledge/blob/master/MDX/Filtered%20Measures.txt)
   
-### WIP
+#### WIP
   - [Other Measures](https://github.com/Sbrillo89/Knowledge/blob/master/MDX/Other%20Measures.txt)
     
 ## DAX
   - [Time Measures Base](https://github.com/Sbrillo89/Knowledge/blob/master/DAX/Time%20Measures%20Base.txt)
   - [Filtered Measures](https://github.com/Sbrillo89/Knowledge/blob/master/DAX/Filtered%20Measures.txt)
   
-### WIP
+#### WIP
   - Other Measures
   
 ## R
@@ -36,5 +36,5 @@
   - [Best Practices](https://github.com/Sbrillo89/Knowledge/blob/master/VBA/BestPractices.md)
   - [SQL Interactions](https://github.com/Sbrillo89/Knowledge/blob/master/VBA/SQL%20Interactions.txt)
   
-### WIP
+#### WIP
   - Other things
