@@ -1,5 +1,4 @@
 /*
-
 Logica per creare le colonne DateFrom - DateTo
 
 [bi].[vExchangeRate_step1]:
@@ -7,7 +6,6 @@ Logica per creare le colonne DateFrom - DateTo
 
 [bi].[vExchangeRate]:
 	Metto in join la Step1 con se stessa, scalando di 1 il rownumber
-
 */
 
 CREATE view [dbo].[vExchangeRate_step1]
