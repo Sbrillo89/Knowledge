@@ -43,6 +43,7 @@
 ## VBA
   - [Best Practices](https://github.com/Sbrillo89/Knowledge/blob/master/VBA/BestPractices.md)
   - [SQL Interactions](https://github.com/Sbrillo89/Knowledge/blob/master/VBA/SQL%20Interactions.txt) _WIP
+  - [Custom Ribbon](https://github.com/Sbrillo89/Knowledge/blob/master/VBA/CustomRibbon.md)
   
 #### WIP
-  - Other things
+  - [Other](https://github.com/Sbrillo89/Knowledge/blob/master/VBA/Other.txt)
