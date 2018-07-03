@@ -38,7 +38,7 @@
   - [Other Measures](https://github.com/Sbrillo89/Knowledge/blob/master/DAX/OtherMeasures.txt) _WIP 
   
 ## R
-  - [CorrezioneCsv](https://github.com/Sbrillo89/Knowledge/blob/master/R/CorrezioneCsv.R)  
+  - [CorrezioneCsv](https://github.com/Sbrillo89/Knowledge/blob/master/R/CorrezioneCsv_AzureML.R)  
 
 ## VBA
   - [Best Practices](https://github.com/Sbrillo89/Knowledge/blob/master/VBA/BestPractices.md)
