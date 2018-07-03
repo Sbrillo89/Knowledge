@@ -18,7 +18,7 @@
   - [Select_DateFrom_YearWeek](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/Select_DateFrom_YearWeek.sql)
   - [Delete_Duplicates](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/Delete_Duplicates.sql)
   - [View_DateRangeCreation](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/View_DateRangeCreation.sql)
-  - [View_RFM](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/View_RFM.sql) _WIP
+  - [View_RFM](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/View_RFM.sql)
   
 #### WIP
   - [Other Scripts](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/Other%20Scripts) _WIP
