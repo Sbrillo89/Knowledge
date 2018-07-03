@@ -4,15 +4,18 @@ Input per modello di clusterizzazione.
 
 [ml].[vCCBehaviour_M]:
 	Questa vista calcola la variabile Monetary (M)
-	(M): 
+	(M): l’ammontare di tutti gli acquisti effettuati dal cliente
+	     La sommatoria comprende gli importi dei resi
 
 [ml].[vCCBehaviour_R]:
 	Questa vista calcola la variabile Recency (R)
-	(R):
+	(R): quanti mesi(gg, anni, ...) sono trascorsi dall’ultimo acquisto del cliente
+	     la «Last Purchase Date» è l’ultimo acquisto "non reso"
 
 [ml].[vCCBehaviour_F]:
 	Questa vista calcola la variabile Frequency (F)
-	(F):
+	(F): numero di transazioni medie mensili che ha fatto il cliente dal suo primo acquisto
+	     Transazioni di soli resi non sono considerate
 	
 [ml].[vCCBehaviour_RFM]:
 	Questa vista aggrega le 3 precedenti.
@@ -104,7 +107,6 @@ left outer join (  --DENOMINATORE: Numero di mesi trascorsi tra oggi e data del 
 ) d
 on n.CustomerID = d.CustomerID
 
-	
 -----------------------------------------------------------------------------------------------------
 	
 CREATE view [ml].[vCCBehaviour_RFM]
