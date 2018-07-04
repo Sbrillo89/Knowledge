@@ -15,6 +15,7 @@
 #### Query e Views
   - [Select_TableSpace](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/Select_TableSpace.sql)
   - [Select_TableLock](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/Select_TableLock.sql)
+  - [Select_ScheduledReports](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/Select_ScheduledReports.sql)
   - [Select_DateFrom_YearWeek](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/Select_DateFrom_YearWeek.sql)
   - [Delete_Duplicates](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/Delete_Duplicates.sql)
   - [View_DateRangeCreation](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/View_DateRangeCreation.sql)
