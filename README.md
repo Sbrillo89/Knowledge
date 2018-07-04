@@ -40,7 +40,7 @@
   - [Other Measures](./DAX/OtherMeasures.txt) _WIP 
   
 ## R
-  - [CorrezioneCsv](./R/CorrezioneCsv_AzureML.R)  
+  - [CorrezioneCsv_AzureML](./R/CorrezioneCsv_AzureML.R)  
 
 ## VBA
   - [Best Practices](./VBA/BestPractices.md)
