@@ -43,7 +43,11 @@
   - [CorrezioneCsv_AzureML](./R/CorrezioneCsv_AzureML.R)  
 
 ## VBA
-  - [Best Practices](./VBA/BestPractices.md)
+
+#### Best Practices
+  - [Ottimizzazione esecuzione](./VBA/BestPractices.md)
+
+#### Applicazioni
   - [SQL Interactions](./VBA/SQL%20Interactions.txt) _WIP
   - [Custom Ribbon](./VBA/CustomRibbon.md) _WIP
   
