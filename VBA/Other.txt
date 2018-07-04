@@ -77,3 +77,25 @@ Loop
 Sheets("FactPromo").Visible = False
 End Sub
 
+'Show use form e refresh
+UF_KeyConfigurator.Hide
+    UF_7_Installing.Image6.Visible = True
+    UF_7_Installing.Image5.Visible = False
+    DoEvents
+    UF_7_Installing.Repaint
+    DoEvents
+    Application.Wait (Now + TimeValue("00:00:02"))
+
+'Vlookup
+Sheets("Replenishment").Range("I1").Value = Application.WorksheetFunction.VLookup(Item, Worksheets("ParametriAlgoritmiREP").Range("A2:F2000"), 6, False)
+
+'Wait time
+Application.Wait (Now + TimeValue("00:00:03"))
+
+
+
+
+
+
+
+
