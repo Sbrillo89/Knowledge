@@ -30,22 +30,22 @@
   - [Filtered Measures](./MDX/Filtered%20Measures.txt) _WIP
   
 #### WIP
-  - [Other Measures](https://github.com/Sbrillo89/Knowledge/blob/master/MDX/Other%20Measures.txt) _WIP
+  - [Other Measures](./MDX/Other%20Measures.txt) _WIP
     
 ## DAX
-  - [Time Measures Base](https://github.com/Sbrillo89/Knowledge/blob/master/DAX/Time%20Measures%20Base.txt)
-  - [Filtered Measures](https://github.com/Sbrillo89/Knowledge/blob/master/DAX/Filtered%20Measures.txt) _WIP
+  - [Time Measures Base](./DAX/Time%20Measures%20Base.txt)
+  - [Filtered Measures](./DAX/Filtered%20Measures.txt) _WIP
   
 #### WIP
-  - [Other Measures](https://github.com/Sbrillo89/Knowledge/blob/master/DAX/OtherMeasures.txt) _WIP 
+  - [Other Measures](./DAX/OtherMeasures.txt) _WIP 
   
 ## R
-  - [CorrezioneCsv](https://github.com/Sbrillo89/Knowledge/blob/master/R/CorrezioneCsv_AzureML.R)  
+  - [CorrezioneCsv](./R/CorrezioneCsv_AzureML.R)  
 
 ## VBA
-  - [Best Practices](https://github.com/Sbrillo89/Knowledge/blob/master/VBA/BestPractices.md)
-  - [SQL Interactions](https://github.com/Sbrillo89/Knowledge/blob/master/VBA/SQL%20Interactions.txt) _WIP
-  - [Custom Ribbon](https://github.com/Sbrillo89/Knowledge/blob/master/VBA/CustomRibbon.md) _WIP
+  - [Best Practices](./VBA/BestPractices.md)
+  - [SQL Interactions](./VBA/SQL%20Interactions.txt) _WIP
+  - [Custom Ribbon](./VBA/CustomRibbon.md) _WIP
   
 #### WIP
-  - [Other](https://github.com/Sbrillo89/Knowledge/blob/master/VBA/Other.txt) _WIP
+  - [Other](./VBA/Other.txt) _WIP
