@@ -170,44 +170,7 @@ ALTER TABLE dbo.FactsInvCrMStage REBUILD PARTITION = ALL
 WITH (DATA_COMPRESSION = ROW);  
 
 ------------------------------------------------------------------------------------------------------------
--- Check esecuzione del Job
-IF NOT EXISTS(
-		select 1
-		from msdb.dbo.sysjobs_view job
-		inner join msdb.dbo.sysjobactivity activity
-			on job.job_id = activity.job_id
-		where
-			activity.run_Requested_date is not null
-			and activity.stop_execution_date is null
-			and job.name = N'DataModelPopulate'
-		)
-BEGIN
-	PRINT 'Starting jobDataModelPopulate';
-	EXEC msdb.dbo.sp_start_job N'DataModelPopulate';
-END 
 
-------------------------------------------------------------------------------------------------------------
--- Query Report Schedulati
-
-SELECT 
-   Schedule.ScheduleID 			AS SQLAgent_Job_Name
-   ,Subscriptions.Description 		AS sub_desc
-   ,Subscriptions.DeliveryExtension 	AS sub_delExt
-   ,Subscriptions.LastRunTime
-   ,Subscriptions.EventType
-   ,Subscriptions.LastStatus
-   ,Subscriptions.DeliveryExtension
-   ,[Catalog].Name 			AS ReportName
-
-FROM reportserver.dbo.ReportSchedule 
-
-INNER JOIN reportserver.dbo.Schedule
-	ON ReportSchedule.ScheduleID = Schedule.ScheduleID
-INNER JOIN reportserver.dbo.Subscriptions
-	ON ReportSchedule.SubscriptionID = Subscriptions.SubscriptionID
-INNER JOIN reportserver.dbo.[Catalog]
-	ON ReportSchedule.ReportID = [Catalog].ItemID
-	AND Subscriptions.Report_OID = [Catalog].ItemID
 
 ------------------------------------------------------------------------------------------------------------
 -- SSRS DateFrom / DateTo 
