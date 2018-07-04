@@ -26,8 +26,8 @@
   - [Other Scripts](./SQL/Other%20Scripts) _WIP
 
 ## MDX
-  - [Time Measures Base](https://github.com/Sbrillo89/Knowledge/blob/master/MDX/Time%20Measures%20Base.txt)
-  - [Filtered Measures](https://github.com/Sbrillo89/Knowledge/blob/master/MDX/Filtered%20Measures.txt) _WIP
+  - [Time Measures Base](./MDX/Time%20Measures%20Base.txt)
+  - [Filtered Measures](./MDX/Filtered%20Measures.txt) _WIP
   
 #### WIP
   - [Other Measures](https://github.com/Sbrillo89/Knowledge/blob/master/MDX/Other%20Measures.txt) _WIP
