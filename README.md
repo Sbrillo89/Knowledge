@@ -10,7 +10,7 @@
 #### Functions
   - [fnSplit](./SQL/fnSplit.sql)
   - [fnRemoveNonASCII](./SQL/fnRemoveNonASCII.sql)
-  - [fnEaster](./master/SQL/fnEaster.sql)
+  - [fnEaster](./SQL/fnEaster.sql)
  
 #### Query e Views
   - [Select_TableSpace](./SQL/Select_TableSpace.sql)
