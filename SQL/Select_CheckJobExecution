@@ -1,0 +1,21 @@
+/*
+  Verifica se il job selezionato è in esecuzione.
+  Se non esiste una riga di esecuzione, lo avvia.
+*/
+
+
+-- Check esecuzione del Job
+IF NOT EXISTS(
+              select 1
+              from msdb.dbo.sysjobs_view job
+              inner join msdb.dbo.sysjobactivity activity
+                  on job.job_id = activity.job_id
+              where
+                  activity.run_Requested_date is not null
+                  and activity.stop_execution_date is null
+                  and job.name = N'DataModelPopulate'       --Sostituire con il nome del job
+              )
+BEGIN
+	  PRINT 'Starting jobDataModelPopulate';
+	  EXEC msdb.dbo.sp_start_job N'DataModelPopulate';
+END
