@@ -61,7 +61,7 @@ GO
 Test della funzione:
 
 DECLARE @result nvarchar(20)= NULL;
-EXEC @result = dbo.[fnEasterSunday] @YearVal= 2020;
+EXEC @result = dbo.[fnEaster] @YearVal= 2020;
 PRINT @result;
 */
 
@@ -71,11 +71,11 @@ Per inserire i valori Pasqua + Pasquetta in una tabella dopo aver impostato i pa
 
 insert into dbo.Easter
 select
-  cast (dbo.[fnEasterSunday] ( 201 ) as Date) as [Data]
+  cast (dbo.[fnEaster] ( 201 ) as Date) as [Data]
   ,'Pasqua' as Giorno
 
 insert into dbo.Easter
 select
-  DATEADD (day , 1 , cast (dbo.[fnEasterSunday] ( 2019 ) as Date)) as [Data]
+  DATEADD (day , 1 , cast (dbo.[fnEaster] ( 2019 ) as Date)) as [Data]
   ,'Pasquetta' as Giorno
 */
