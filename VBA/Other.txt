@@ -33,45 +33,47 @@ ActiveSheet.Shapes.Range(Array("NomeSlicer")).Visible = False
 
 --Rimozione Duplicati Keep Last Row
 Sub Macro2() 
-
-' 
-
 Dim i As Long 
-
 Dim j As Long 
-
 Dim ROW_DELETED As Boolean 
-
 i = 2   'start on first row 
-
 Application.ScreenUpdating = False 
-
 Do While i <= ActiveSheet.UsedRange.Rows.Count 
-
     ROW_DELETED = False 
-
     For j = i + 1 To ActiveSheet.UsedRange.Rows.Count 
-
         If Cells(i, 1) = Cells(j, 1) Then 
-
             Rows(i).Delete 
-
             ROW_DELETED = True 
-
             Exit For 
-
         End If 
-
     Next j 
-
     If Not ROW_DELETED Then i = i + 1 
-
 Loop 
-
 Application.ScreenUpdating = True 
-
-    
 End Sub 
 
+Sub CancellaDuplicatiPromo()
+Sheets("FactPromo").Visible = True
+Sheets("FactPromo").Select
+'keep last row
+Dim i As Long
+Dim j As Long
+Dim ROW_DELETED As Boolean
+i = 2   'start on first row
 
+Do While i <= ActiveSheet.UsedRange.Rows.Count
+    ROW_DELETED = False
+    For j = i + 1 To ActiveSheet.UsedRange.Rows.Count
+        If Cells(i, 1) = Cells(j, 1) Then
+         If Cells(i, 2) = Cells(j, 2) Then
+            Rows(i).Delete
+            ROW_DELETED = True
+            Exit For
+         End If
+        End If
+    Next j
+    If Not ROW_DELETED Then i = i + 1
+Loop
+Sheets("FactPromo").Visible = False
+End Sub
 
