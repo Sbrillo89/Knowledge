@@ -4,26 +4,26 @@
 
 #### Stored Procedures
   - [spPopulateDimTime](./SQL/spPopulateDimTime.sql)
-  - [spCreateNA](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/spCreateNA.sql)
-  - [spCountRows_TableBySchema](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/spCountRows_TableBySchema.sql)  
+  - [spCreateNA](./SQL/spCreateNA.sql)
+  - [spCountRows_TableBySchema](./SQL/spCountRows_TableBySchema.sql)  
 
 #### Functions
-  - [fnSplit](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/fnSplit.sql)
-  - [fnRemoveNonASCII](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/fnRemoveNonASCII.sql)
-  - [fnEaster](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/fnEaster.sql)
+  - [fnSplit](./SQL/fnSplit.sql)
+  - [fnRemoveNonASCII](./SQL/fnRemoveNonASCII.sql)
+  - [fnEaster](./master/SQL/fnEaster.sql)
  
 #### Query e Views
-  - [Select_TableSpace](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/Select_TableSpace.sql)
-  - [Select_TableLock](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/Select_TableLock.sql)
-  - [Select_ScheduledReports](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/Select_ScheduledReports.sql)
-  - [Select_CheckJobExecution](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/Select_CheckJobExecution)
-  - [Select_DateFrom_YearWeek](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/Select_DateFrom_YearWeek.sql)
-  - [Delete_Duplicates](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/Delete_Duplicates.sql)
-  - [View_DateRangeCreation](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/View_DateRangeCreation.sql)
-  - [View_RFM](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/View_RFM.sql)
+  - [Select_TableSpace](./SQL/Select_TableSpace.sql)
+  - [Select_TableLock](./Select_TableLock.sql)
+  - [Select_ScheduledReports](./SQL/Select_ScheduledReports.sql)
+  - [Select_CheckJobExecution](./SQL/Select_CheckJobExecution)
+  - [Select_DateFrom_YearWeek](./SQL/Select_DateFrom_YearWeek.sql)
+  - [Delete_Duplicates](./SQL/Delete_Duplicates.sql)
+  - [View_DateRangeCreation](./SQL/View_DateRangeCreation.sql)
+  - [View_RFM](./SQL/View_RFM.sql)
   
 #### WIP
-  - [Other Scripts](https://github.com/Sbrillo89/Knowledge/blob/master/SQL/Other%20Scripts) _WIP
+  - [Other Scripts](./SQL/Other%20Scripts) _WIP
 
 ## MDX
   - [Time Measures Base](https://github.com/Sbrillo89/Knowledge/blob/master/MDX/Time%20Measures%20Base.txt)
