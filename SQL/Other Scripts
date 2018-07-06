@@ -196,7 +196,6 @@ CREATE TABLE #yt
   [Week] int, 
   [xCount] int
 );
-
 INSERT INTO #yt
 (
   [Store], 
@@ -230,8 +229,6 @@ pivot
   for week in ([1], [2], [3])
 ) piv;
 
-See SQL Demo
-
 Then if you need to generate the week number dynamically, your code will be:
 
 DECLARE @cols AS NVARCHAR(MAX),
@@ -257,17 +254,6 @@ set @query = 'SELECT store,' + @cols + ' from
             ) p '
 
 execute(@query);
-
-See SQL Demo.
-
-The dynamic version, generates the list of week numbers that should be converted to columns. Both give the same result:
-
-| STORE |   1 |   2 |   3 |
----------------------------
-|   101 | 138 | 282 | 220 |
-|   102 |  96 | 212 | 123 |
-|   105 |  37 |  78 |  60 |
-|   109 |  59 |  97 |  87 |
 
 
 ------------------------------------------------------------------------------------------------------------
