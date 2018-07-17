@@ -61,7 +61,30 @@ CASE
 
        END
 
- 
+--ANCESTOR (totale di un mese)
+
+ with member TestCurrentCommercialMonthName as
+(Ancestor([Dim Date].[R-YMWD].currentmember, [Dim Date].[R-YMWD].[Retail Month Name])).Name
+member TestCurrentCommercialMonthValue as
+(Ancestor([Dim Date].[R-YMWD].currentmember, [Dim Date].[R-YMWD].[Retail Month Name]), [Measures].[Net Amount-VAT - Budget Retail])
+
+SELECT
+{
+//	 [Measures].[Net Amount-VAT PY]
+//	,[Measures].[Net Amount-VAT PY MTD]
+//	,[Measures].[Net Amount-VAT PY YTD]
+//	,[Measures].[Traffic Flow]
+//	,[Measures].[Document Counter Adjusted PY]
+//	,[Measures].[MTD]
+ TestCurrentCommercialMonthName
+,TestCurrentCommercialMonthValue
+,[Measures].[Net Amount-VAT - Budget Retail]
+,[Measures].[Net Amount-VAT - Budget Retail MTD]
+,[Measures].[Net Amount-VAT - Budget Retail YTD]
+} ON COLUMNS,
+{([Dim Store].[Store].&[ES - Ibiza] )} ON ROWS
+FROM [CUBO_BI]
+WHERE ([Dim Date].[R-YMWD].[Date].&[2018-07-16T00:00:00] )
 
  
 
