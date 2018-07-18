@@ -17,4 +17,10 @@ SUM({STRTOMEMBER(@DateFrom): STRTOMEMBER(@DimDateDate)},[Measures].[Quantity Inv
 ="[Data].[Data].&[" + Format(CDate(DateAdd("d", -1, today())),"yyyy-MM-dd") + "T00:00:00]" 
 
 
+-----------------------------------------------------------------------------------------------------------
+passare valori parametro dentro un altro parametro nel dataset
+
+=replace(Parameters!DimDateRetailFiscalYear.Value,"[Retail Fiscal Year]","[Year]")
+
+=Split(Replace(join(Parameters!ProductBrandCode.Value,",*"),"[070 Product].[03 Brand Code].","[Prodotto].[Brand Sub Class]."),",*") 
 
