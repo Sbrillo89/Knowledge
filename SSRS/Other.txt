@@ -1,1 +1,6 @@
-aaa
+
+default value for Date parameter from OLAP
+
+="[Dim Date].[Date].&[" + Format(CDate(DateAdd(DateInterval.Year, -1, today())),"yyyy-MM-dd") + "T00:00:00]"
+
+
