@@ -87,10 +87,3 @@ FROM [CUBO_BI]
 WHERE ([Dim Date].[R-YMWD].[Date].&[2018-07-16T00:00:00] )
 
  
-
-SSRS:
-
-default value for Date parameter
-
-="[Dim Date].[Date].&[" + Format(CDate(DateAdd(DateInterval.Year, -1, today())),"yyyy-MM-dd") + "T00:00:00]"
-
