@@ -4,3 +4,17 @@ default value for Date parameter from OLAP
 ="[Dim Date].[Date].&[" + Format(CDate(DateAdd(DateInterval.Year, -1, today())),"yyyy-MM-dd") + "T00:00:00]"
 
 
+------------------------------------------------------------------------------------------------------------
+-- SSRS DateFrom / DateTo 
+
+Nella query MDX aggiungere un nuovo calculated member in basso a sinistra 
+
+SUM({STRTOMEMBER(@DateFrom): STRTOMEMBER(@DimDateDate)},[Measures].[Quantity Inventory]) 
+
+------------------------------------------------------------------------------------------------------------
+-- SSRS Defalut data con OLAP Data Source
+
+="[Data].[Data].&[" + Format(CDate(DateAdd("d", -1, today())),"yyyy-MM-dd") + "T00:00:00]" 
+
+
+
