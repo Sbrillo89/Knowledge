@@ -43,6 +43,7 @@
 ## SSRS
 
 #### WIP
+  - [Other](./SSRS/Other.txt)
 
 ## R
   - [CorrezioneCsv_AzureML](./R/CorrezioneCsv_AzureML.R)  
