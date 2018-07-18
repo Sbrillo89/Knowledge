@@ -24,26 +24,26 @@
   - [Pivot-Unpivot](./SQL/Pivot-UnPivot.sql)
   
 #### WIP
-  - [Other Scripts](./SQL/Other%20Scripts) _WIP
+  - [Other Scripts](./SQL/Other%20Scripts) _WIP_
 
 ## MDX
   - [Time Measures Base](./MDX/Time%20Measures%20Base.txt)
-  - [Filtered Measures](./MDX/Filtered%20Measures.txt) _WIP
+  - [Filtered Measures](./MDX/Filtered%20Measures.txt) _WIP_
   
 #### WIP
-  - [Other Measures](./MDX/Other%20Measures.txt) _WIP
+  - [Other Measures](./MDX/Other%20Measures.txt) _WIP_
     
 ## DAX
   - [Time Measures Base](./DAX/Time%20Measures%20Base.txt)
-  - [Filtered Measures](./DAX/Filtered%20Measures.txt) _WIP
+  - [Filtered Measures](./DAX/Filtered%20Measures.txt) _WIP_
   
 #### WIP
-  - [Other Measures](./DAX/OtherMeasures.txt) _WIP 
+  - [Other Measures](./DAX/OtherMeasures.txt) _WIP_
 
 ## SSRS
 
 #### WIP
-  - [Other](./SSRS/Other.txt)
+  - [Other](./SSRS/Other.txt) _WIP_
 
 ## R
   - [CorrezioneCsv_AzureML](./R/CorrezioneCsv_AzureML.R)  
@@ -54,8 +54,8 @@
   - [Ottimizzazione esecuzione](./VBA/BestPractices.md)
 
 #### Applicazioni
-  - [SQL Interactions](./VBA/SQL%20Interactions.txt) _WIP
-  - [Custom Ribbon](./VBA/CustomRibbon.md) _WIP
+  - [SQL Interactions](./VBA/SQL%20Interactions.txt) _WIP_
+  - [Custom Ribbon](./VBA/CustomRibbon.md) _WIP_
   
 #### WIP
-  - [Other](./VBA/Other.txt) _WIP
+  - [Other](./VBA/Other.txt) _WIP_
