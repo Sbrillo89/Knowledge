@@ -21,6 +21,7 @@
   - [Delete_Duplicates](./SQL/Delete_Duplicates.sql)
   - [View_DateRangeCreation](./SQL/View_DateRangeCreation.sql)
   - [View_RFM](./SQL/View_RFM.sql)
+  - [Pivot-Unpivot](./SQL/Pivot-UnPivot.sql)
   
 #### WIP
   - [Other Scripts](./SQL/Other%20Scripts) _WIP
@@ -38,7 +39,11 @@
   
 #### WIP
   - [Other Measures](./DAX/OtherMeasures.txt) _WIP 
-  
+
+## SSRS
+
+#### WIP
+
 ## R
   - [CorrezioneCsv_AzureML](./R/CorrezioneCsv_AzureML.R)  
 
