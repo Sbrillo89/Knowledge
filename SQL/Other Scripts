@@ -170,8 +170,35 @@ ALTER TABLE dbo.FactsInvCrMStage REBUILD PARTITION = ALL
 WITH (DATA_COMPRESSION = ROW);  
 
 ------------------------------------------------------------------------------------------------------------
+-- SP per creazione folder dei report schedulati da ssrs:
+/*
+[dbo].[435_byStore_Scheduling] -> nella colonna Path contiene tutti i nomi delle directory da creare
+esempio:
+\\xxx.com\dfs\SH_Reports\PROD\102-654
+\\xxx.com\dfs\SH_Reports\PROD\102-654
+\\xxx.com\dfs\SH_Reports\PROD\102-760
+\\xxx.com\dfs\SH_Reports\PROD\102-760
+*/
 
 
+CREATE procedure [dbo].[spGeneraFolder_435_byStore] 
+as
+begin
+declare @path nvarchar(255)
+declare cur cursor fast_forward
+	for SELECT distinct 
+		[PATH]   
+	FROM [dbo].[435_byStore_Scheduling]
+open cur
+	 fetch next from cur into @path
+	 while @@fetch_status = 0
+	 begin
+		EXEC master.dbo.xp_create_subdir @path
+	 fetch next from cur into @path
+	 end
+close cur
+deallocate cur
+end
 
 
 
