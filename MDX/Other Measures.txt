@@ -63,6 +63,9 @@ CASE
 
 --ANCESTOR (totale di un mese)
 
+MDX TOTALE MESE DALLA DATA:
+(Ancestor([Dim Date].[R-YMWD].currentmember, [Dim Date].[R-YMWD].[Retail Month Name]), [Measures].[Net Amount-VAT - Budget Retail])
+
  with member TestCurrentCommercialMonthName as
 (Ancestor([Dim Date].[R-YMWD].currentmember, [Dim Date].[R-YMWD].[Retail Month Name])).Name
 member TestCurrentCommercialMonthValue as
