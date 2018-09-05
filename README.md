@@ -47,6 +47,9 @@
 
 ## R
   - [CorrezioneCsv_AzureML](./R/CorrezioneCsv_AzureML.R)  
+  
+### WIP
+  - [Other](./R/Other.txt) _WIP_
 
 ## VBA
 
