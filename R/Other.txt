@@ -1,0 +1,78 @@
+----------------------------------------------------------------------------------
+-- DO CALL
+
+input.list <- list()
+i<-1
+for(i in 1:length(leagues))
+{
+  j<-1
+  season <- currentseason       #1213 #1011 #1718
+  league <- leagues[i]
+  subinput.list <- list()
+  for(j in 1)                   #1:6 #1:8 #1
+  {
+    path <- paste0('http://www.football-data.co.uk/mmz4281/',season,'/',league,'.csv')
+    print(path)
+    df.templeague <- read.csv(path,stringsAsFactors = FALSE)[,1:10]
+    df.templeague$Season <- season
+    subinput.list[[j]] <- df.templeague
+    season <- season + 101
+  }
+  input.list[[i]] <- do.call(rbind,subinput.list)
+}
+df.input <- do.call(rbind,input.list)
+
+----------------------------------------------------------------------------------
+-- MERGE
+
+merge.s1 <- merge(x = df.predictions
+                  ,y = df.class
+                  ,by.x = "Matchkey"
+                  ,by.y = "Matchkey"
+                  ,sort = FALSE )
+
+----------------------------------------------------------------------------------
+-- DPLYR Manipulations
+
+--SELECT
+
+--FILTER
+  df.input <- df.input %>%
+    filter(Starts != '<NA>') 
+    
+--RENAME
+
+--ARRANGE
+
+--SEPARATE
+
+--MUTATE AT
+
+merge.s4 <- merge.s4 %>%
+  #mutate_at(1:6,funs(as.character)) %>%
+  mutate_at(5:13,funs(as.numeric))
+
+merge.s1 <- %>%
+                  rename(Division = Division.x) %>%
+                  separate(Match, c("HomeTeam", "AwayTeam"), " - ") %>%
+                  arrange(MatchDate, Division)
+
+----------------------------------------------------------------------------------
+-- rimozione righe contenenti degli NA
+
+df.data <- drop_na(df.data)
+
+----------------------------------------------------------------------------------
+-- 
+
+----------------------------------------------------------------------------------
+-- 
+
+----------------------------------------------------------------------------------
+-- 
+
+----------------------------------------------------------------------------------
+-- 
+
+----------------------------------------------------------------------------------
+-- 
