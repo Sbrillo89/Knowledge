@@ -6,3 +6,10 @@ Net Net:=
       ;"Puntuale";[Net Net P]
       ;"Progressivo alla data";[Net Net YTD])
 ;0)
+
+
+UR YTD_Over:= SWITCH(TRUE();
+                    FIRSTNONBLANK('Line'[LineCode];TRUE())="OTH";'AverageUnitaryRevenuesYTD'[UR YTD_OTH]
+                    ;'AverageUnitaryRevenuesYTD'[UR YTD_All]) 
+ 
+
