@@ -24,3 +24,21 @@ passare valori parametro dentro un altro parametro nel dataset
 
 =Split(Replace(join(Parameters!ProductBrandCode.Value,",*"),"[070 Product].[03 Brand Code].","[Prodotto].[Brand Sub Class]."),",*") 
 
+
+--------------------------------------------------------------------------------------------------------------
+
+SSRS:
+Public Function NullAsZero(ByRef F As Field) As Double
+        If F.IsMissing Then
+            Return 0
+        Else
+            If F.Value Is Nothing Then
+                Return 0
+            Else
+                Return F.Value
+            End If
+        End If
+End Function
+
+=(code.NullAsZero(Fields!Avg_Spending_PY_Foreign_New)+code.NullAsZero(Fields!Avg_Spending_PY_Foreign_Loyal))/2
+
