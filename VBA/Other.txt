@@ -1,6 +1,11 @@
 Parametro SP numerico
 cmd.Parameters.Append cmd.CreateParameter("Anno", adInteger, adParamInput, , anno)
 
+'converto il numero di colonna nella sua rispettiva lettera
+varTo = Split(Cells(1, grigioTo).Address(True, False), "$")
+varFrom = Split(Cells(1, arancioFrom).Address(True, False), "$")
+grigioToletter = varTo(0)
+arancioFromletter = varFrom(0)
 
 --Cancella righe da una tabella:
 
