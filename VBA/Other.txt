@@ -1,3 +1,6 @@
+Parametro SP numerico
+cmd.Parameters.Append cmd.CreateParameter("Anno", adInteger, adParamInput, , anno)
+
 
 --Cancella righe da una tabella:
 
