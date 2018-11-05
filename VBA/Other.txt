@@ -1,3 +1,8 @@
+--Convalida dati dinamico:
+=INDIRETTO("Tabella[Colonna]")
+
+
+
 Parametro SP numerico
 cmd.Parameters.Append cmd.CreateParameter("Anno", adInteger, adParamInput, , anno)
 
