@@ -109,6 +109,33 @@ Application.Wait (Now + TimeValue("00:00:03"))
 
 
 
+'sProtezione di un singolo foglio
+Sub fn_UnProtectActiveSheet()
+    ActiveSheet.Unprotect Password:="123"
+End Sub
+
+'Protezione di un singolo foglio
+Sub fn_ProtectActiveSheet()
+    ActiveSheet.Protect "123", DrawingObjects:=True, Contents:=True, Scenarios:=True, userInterfaceOnly:=True, AllowSorting:=True, AllowFiltering:=True
+End Sub
+
+'Protezione di TUTTI i fogli nel file Excel
+Sub fn_ProtectAll()
+    Dim ws As Worksheet
+    For Each ws In Worksheets
+        ws.Activate
+        Call fn_ProtectActiveSheet
+    Next ws
+End Sub
+
+'sProtezione di TUTTI i fogli nel file Excel
+Sub fn_UnProtectAll()
+    Dim ws As Worksheet
+    For Each ws In Worksheets
+        ws.Activate
+        Call fn_UnProtectActiveSheet
+    Next ws
+End Sub
 
 
 
