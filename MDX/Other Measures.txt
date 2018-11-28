@@ -89,4 +89,11 @@ SELECT
 FROM [CUBO_BI]
 WHERE ([Dim Date].[R-YMWD].[Date].&[2018-07-16T00:00:00] )
 
- 
+
+-----ROOT
+ CREATE MEMBER CURRENTCUBE.[Measures].[RetentionRateNewStep1]
+AS iif([Measures].[Contact Counter New PY] > 0 and (ROOT([DimStore]),[Measures].[Transaction Counter]) > 0 ,1,Null), 
+FORMAT_STRING = "Standard", 
+NON_EMPTY_BEHAVIOR = { [Transaction Code Distinct Count] }, 
+VISIBLE = 0 ,  ASSOCIATED_MEASURE_GROUP = 'Contact Counter'  ;
+
