@@ -12,4 +12,13 @@ UR YTD_Over:= SWITCH(TRUE();
                     FIRSTNONBLANK('Line'[LineCode];TRUE())="OTH";'AverageUnitaryRevenuesYTD'[UR YTD_OTH]
                     ;'AverageUnitaryRevenuesYTD'[UR YTD_All]) 
  
+ 
+ Confronto PY pari giorno (martedì con martedì)
+ CALCULATE([Sales Amount Loc]; DATEADD ( 'Dim Date'[Date]; -364; day ))
+ 
+ 
+Totale mese da selezione singola data:
+Totale Month:= TOTALMTD([Budget HQ Amount Loc];ENDOFMONTH('Dim Date'[Date]))    
 
+Totale mese YearToMonth da selezione singola data:
+Totale YTM:= TOTALYTD([Budget HQ Amount Loc];ENDOFMONTH('Dim Date'[Date]))
