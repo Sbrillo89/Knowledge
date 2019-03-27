@@ -1,0 +1,6 @@
+
+
+
+df_leagues = df_leagues.fillna(0)
+df_leagues.dtypes
+df_leagues = json_normalize(data)
