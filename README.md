@@ -5,7 +5,8 @@
 #### Stored Procedures
   - [spPopulateDimTime](./SQL/spPopulateDimTime.sql)
   - [spCreateNA](./SQL/spCreateNA.sql)
-  - [spCountRows_TableBySchema](./SQL/spCountRows_TableBySchema.sql)  
+  - [spCountRows_TableBySchema](./SQL/spCountRows_TableBySchema.sql)
+  - [spWhoIsActive](./SQL/spWhoIsActive.sql)
 
 #### Functions
   - [fnSplit](./SQL/fnSplit.sql)
