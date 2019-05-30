@@ -1,4 +1,7 @@
-
+--------------------------------------------------------------------
+--cambiare schema ad una tabella dbo -> cfg
+ALTER SCHEMA cfg
+TRANSFER [dbo].[SecurityRules]
 
 --------------------------------------------------------------------
 --  Tronca tabelle per schema
