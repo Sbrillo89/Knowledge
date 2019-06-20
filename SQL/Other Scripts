@@ -214,5 +214,19 @@ close cur
 deallocate cur
 end
 
+------------------------------------------------------------------------------------------------------------
+-- SP cancello duplicati identici tenendone uno solo:
+
+WITH cte AS (
+  SELECT DocumentRowKey,
+     row_number() OVER(PARTITION BY DocumentRowKey order by DocumentRowKey) AS [rn]
+  FROM [dbo].[FactDocumentStage]
+ -- where DocumentRowKey = '132-969-007-842-TRS-1333-2018-07-25-6212707-15-6'
+)
+--Delete
+select *
+from cte 
+WHERE [rn] > 1
+
 
 
