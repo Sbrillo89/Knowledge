@@ -15,7 +15,7 @@
  
 #### Query e Views
   - [Select_TableSpace](./SQL/Select_TableSpace.sql)
-  - [Select_TableLock](./Select_TableLock.sql)
+  - [Select_TableLock](./SQL/Select_TableLock.sql)
   - [Select_ScheduledReports](./SQL/Select_ScheduledReports.sql)
   - [Select_CheckJobExecution](./SQL/Select_CheckJobExecution)
   - [Select_DateFrom_YearWeek](./SQL/Select_DateFrom_YearWeek.sql)
