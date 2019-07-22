@@ -139,3 +139,31 @@ End Sub
 
 
 
+Private Sub Worksheet_Change(ByVal Target As Range)
+    If Not Intersect(Target, Target.Worksheet.Range("J7")) Is Nothing Then
+
+            Application.ScreenUpdating = False
+            Application.EnableEvents = False
+            Application.DisplayStatusBar = False
+            
+            Sheets("db Griglia T").Visible = True
+            Sheets("EstrazioneDettaglio").Visible = True
+            
+            Call FromSQL_Griglia_Dettaglio
+            
+            Call FromSQL_Griglia_Testata
+               
+
+            Sheets("db Griglia T").Visible = False
+            Sheets("EstrazioneDettaglio").Visible = False
+
+            Application.ScreenUpdating = True
+            Application.EnableEvents = True
+            Application.DisplayStatusBar = True
+            'Application.Calculation = xlCalculationAuto
+            Application.Calculation = xlAutomatic
+            Calculate
+            
+    End If
+End Sub
+
