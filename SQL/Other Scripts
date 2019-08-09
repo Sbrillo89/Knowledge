@@ -229,4 +229,53 @@ from cte
 WHERE [rn] > 1
 
 
+------------------------------------------------------------------------------------------------------------------------
+
+Use SSISDB
+
+Go
+
+WITH 
+ctePRE AS  (SELECT  * FROM catalog.event_messages em WHERE em.event_name IN ('OnPreExecute')), 
+ctePOST AS (SELECT  * FROM catalog.event_messages em WHERE em.event_name IN ('OnPostExecute'))
+
+SELECT  
+b.operation_id
+, b.package_name
+, b.package_path
+, b.message_source_name
+, b.message_time as pre_message_time
+, e.message_time as post_message_time
+, DATEDIFF(SECOND, b.message_time, COALESCE (e.message_time, SYSDATETIMEOFFSET())) as elapsed_time_sec
+
+INTO #t
+FROM ctePRE b 
+LEFT OUTER JOIN ctePOST e 
+	ON b.operation_id = e.operation_id 
+	AND b.package_name = e.package_name
+	AND b.message_source_id = e.message_source_id
+
+INNER JOIN [catalog].executions e2 
+	ON b.operation_id = e2.execution_id
+
+WHERE b.package_path <> '\Package' 
+  AND cast(b.message_time AS date) = '2019-08-09' /* to get execution of a specific day. This line can be commented to get existing data till date */
+
+
+
+SELECT
+pkg.package_name
+,pkg.package_path
+--SUBSTRING(pkg.package_name, 1, LEN(pkg.package_name) - 5) PackageName
+, pkg.message_source_name
+, pkg.pre_message_time
+, pkg.post_message_time
+, pkg.elapsed_time_sec
+FROM #t pkg
+where package_name in( 
+'1.2.1 - Carica_dati_Informix.dtsx'
+--'1 - Carica_dati.dtsx'
+)
+
+ORDER BY elapsed_time_sec DESC
 
