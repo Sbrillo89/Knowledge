@@ -15,6 +15,28 @@ ALTER SCHEMA cfg
 TRANSFER [dbo].[SecurityRules]
 
 --------------------------------------------------------------------
+--creazione utenza su sql Azure
+
+--Da lanciare su Master
+CREATE LOGIN test 
+WITH PASSWORD = 'Password'
+
+--Da lanciare sul DB
+CREATE USER testUser
+FOR LOGIN test 
+WITH DEFAULT_SCHEMA = dbo;
+
+GRANT CONTROL ON "cfg"."FCST_Process" TO testUser
+GRANT CONTROL ON "fcst"."Input_ProductLink" TO testUser
+GRANT CONTROL ON "fcst"."Input_TimeSeries" TO testUser
+GRANT CONTROL ON "fcst"."Output_TimeSeriesForecast" TO testUser
+
+--La login funziona se nella connessione viene specificato il db a cui si connette.
+--altrimenti di default la login si connette sul db Master
+
+
+
+--------------------------------------------------------------------
 --  Tronca tabelle per schema
 
 create procedure [dbo].[Test_Tronca_Tabelle_per_Schema]
