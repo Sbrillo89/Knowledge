@@ -65,6 +65,10 @@ df.data <- drop_na(df.data)
 ----------------------------------------------------------------------------------
 -- 
 
+#library(pracma)
+install.packages("src/pracma_2.2.5.zip", lib = ".", repos = NULL, verbose = TRUE)
+library(pracma, lib.loc=".", verbose=TRUE)
+
 ----------------------------------------------------------------------------------
 -- 
 
