@@ -262,8 +262,8 @@ from cte
 WHERE [rn] > 1
 
 
-------------------------------------------------------------------------------------------------------------------------
-
+------------------------------------------------------------------------------------------------------------
+-- 
 Use SSISDB
 
 Go
@@ -312,3 +312,45 @@ where package_name in(
 
 ORDER BY elapsed_time_sec DESC
 
+select 
+a.operation_id 
+,package_name
+,message_source_name
+,MIN( message_time  ) Task_Start
+,MAX( message_time  ) Task_Finish
+,DATEDIFF(MINUTE, MIN(message_time) , MAX(message_time)  ) [time_Take_Minutes]
+,DATEDIFF(SECOND, MIN(message_time) , MAX(message_time)  ) [time_Take_Seconds]
+from SSISDB.[catalog].[event_messages] a
+inner JOIN SSISDB.[catalog].[operations] b
+ON b.operation_id = a.operation_id
+
+where 
+	a.operation_id = '202140'
+	and a.event_name in (
+		'OnPreExecute',
+		'OnPostExecute'
+		)
+
+ GROUP BY a.operation_id ,  package_name ,  message_source_name 
+ ORDER BY 7 DESC
+
+
+ select 
+ RIGHT([Message],27)
+ ,*
+ ,DATEDIFF(MINUTE, start_time , end_time  ) [time_Take_Minutes]
+  from SSISDB.[catalog].[event_messages] a
+  inner JOIN SSISDB.[catalog].[operations] b
+ON b.operation_id = a.operation_id
+   where a.operation_id = '202140'
+   and a.[message] like '%Elapsed time%'
+
+   order by 1 desc
+
+
+------------------------------------------------------------------------------------------------------------
+-- 
+
+		select distinct (OBJECT_NAME (id))
+		from sys.syscomments
+		where text like '%DIM_CALENDAR%'
