@@ -1,4 +1,20 @@
 /*
+	più compatta
+*/
+
+SELECT 
+	  DataareaId as DataAreaCod
+	, ItemId as ProductCod
+	, CAST(InventDate as date) as StartInventDate
+	, LEAD(DATEADD(dd, -1, CAST(InventDate as date)), 1, '99991231') OVER (PARTITION BY DataareaId, ItemId ORDER BY DataAreaId, ItemId, InventDate) as EndInventDate
+	, CAST(AverageCost as money) as AverageCost
+FROM [stg].[AX01_bi_inventvalueitem]
+
+
+
+
+
+/*
 Logica per creare le colonne DateFrom - DateTo
 
 [bi].[vExchangeRate_step1]:
