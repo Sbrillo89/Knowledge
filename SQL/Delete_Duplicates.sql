@@ -1,21 +1,14 @@
-
 /*
   Elimina i duplicati
-  
-  Identificare la chiave della tabella con le colonne Col1, Col2, Col3.
-
+  Identificare la chiave della tabella con le colonne Col1, Col2.
 */
 
-DELETE 
-FROM MyTable
-LEFT OUTER JOIN (
-				SELECT MIN(RowId) as RowId, Col1, Col2, Col3
-				FROM MyTable
-				GROUP BY Col1, Col2, Col3
-				) as KeepRows
-ON MyTable.RowId = KeepRows.RowId
-
-WHERE
-	KeepRows.RowId IS NULL
-
-
+WITH cte AS (
+  SELECT Col1, Col2,
+     ROW_NUMBER() OVER(PARTITION BY Col1, Col2 order by Col1) AS [rn]
+  FROM [dbo].[Table]
+)
+--Delete
+select *
+from cte 
+WHERE [rn] > 1
