@@ -1,0 +1,60 @@
+
+check file vs 2012
+
+
+#region Namespaces
+using System;
+using System.Data;
+using System.IO;
+using Microsoft.SqlServer.Dts.Runtime;
+using System.Windows.Forms;
+#endregion
+
+
+--risultato come fallimento o no del Task
+public void Main()
+		{
+			string folder = Dts.Variables["User::ProcessFolder"].Value.ToString();
+
+            string[] files = Directory.GetFiles(folder, "tenderdetail_*.csv", SearchOption.TopDirectoryOnly);
+
+            if (files.Length > 0)
+            {
+                Dts.TaskResult = (int)ScriptResults.Success;
+            }
+            else
+            {
+                Dts.TaskResult = (int)ScriptResults.Failure;
+            }
+		}
+        
+#region ScriptResults declaration
+        /// <summary>
+        /// This enum provides a convenient shorthand within the scope of this class for setting the
+        /// result of the script.
+        /// 
+        /// This code was generated automatically.
+        /// </summary>
+        enum ScriptResults
+        {
+            Success = Microsoft.SqlServer.Dts.Runtime.DTSExecResult.Success,
+            Failure = Microsoft.SqlServer.Dts.Runtime.DTSExecResult.Failure
+        };
+        #endregion
+
+-- risultato in variabile
+public void Main()
+        {
+            string folder = Dts.Variables["User::ETL_Folder_Transactions"].Value.ToString();
+
+            string[] files = Directory.GetFiles(folder, "*.csv", SearchOption.TopDirectoryOnly);
+
+            if (files.Length > 0)
+            {
+                Dts.Variables["User::TaskResult"].Value = true;
+            }
+            else
+            {
+                Dts.Variables["User::TaskResult"].Value = false;
+            }
+        }
