@@ -1,3 +1,21 @@
+/*
+La tabella partizionata è una tabella logica che mette assieme N tabelle fisiche uguali.
+Le tabelle fisiche possono stare su dischi diversi (o filegroup)
+Partizionamento:
+    -Verticale = seziono per righe
+    -Orizzontale = seziono per colonne
+    
+Se partiziono la tabella su stg, tendenzialmente anche su dwh
+
+Partition Function: specifica su quale colonna e quali valori partizionare
+Partition Schema: ogni partizione in quale Datafile la metto. Mettiamo sempre un datafile in più per valori non specificati nella function (partizione tappo)
+
+
+*/
+
+
+
+
 --1 Partition Function
 CREATE PARTITION FUNCTION [pf_Company](nvarchar(4)) AS RANGE LEFT FOR VALUES (N'CRM', N'CZK', N'OTH', N'SER', N'SLO', N'SLV')
 
