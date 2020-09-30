@@ -42,3 +42,11 @@ End Function
 
 =(code.NullAsZero(Fields!Avg_Spending_PY_Foreign_New)+code.NullAsZero(Fields!Avg_Spending_PY_Foreign_Loyal))/2
 
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--Errore su Chrome
+="[Dim Date].[Date].&["+format(CDATE(Parameters!FromDimDateDate.Value),"yyyy-MM-ddTHH:mm:ss")+"]"
+="[Dim Date].[Date].&["+format(CDATE(Parameters!ToDimDateDate.Value),"yyyy-MM-ddTHH:mm:ss")+"]"
+-> correzione
+="[Dim Date].[Date].["+Format(Day(Parameters!FromDimDateDate.Value),"00").ToString()+"/"+Format(Month(Parameters!FromDimDateDate.Value),"00").ToString()+"/"+Year(Parameters!FromDimDateDate.Value).ToString()+"]"
+="[Dim Date].[Date].["+Format(Day(Parameters!ToDimDateDate.Value),"00").ToString()+"/"+Format(Month(Parameters!ToDimDateDate.Value),"00").ToString()+"/"+Year(Parameters!ToDimDateDate.Value).ToString()+"]"
+
