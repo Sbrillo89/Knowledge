@@ -22,3 +22,59 @@ Totale Month:= TOTALMTD([Budget HQ Amount Loc];ENDOFMONTH('Dim Date'[Date]))
 
 Totale mese YearToMonth da selezione singola data:
 Totale YTM:= TOTALYTD([Budget HQ Amount Loc];ENDOFMONTH('Dim Date'[Date]))
+
+
+
+--MISURE COMPARABILI
+
+Sales Gross Amount Eur Comp:= 
+var maxCY = max('Dim Date'[Date])
+ var maxLY = DATEADD(LASTDATE('Dim Date'[Date]),-1,year)
+return
+CALCULATE([Sales Gross Amount Eur]
+			,'Dim Store'[Store Open Date] <= maxCY
+			,'Dim Store'[Store Close Date] >= maxCY
+			,'Dim Store'[Store Open Date] <= maxLY
+			,'Dim Store'[Store Close Date] >= maxLY
+			)
+      
+Sales Gross Amount Eur Comp LY:=  
+ var maxCY = max('Dim Date'[Date])
+ var maxLY = DATEADD(LASTDATE('Dim Date'[Date]),-1,year)
+return
+CALCULATE([Sales Gross Amount Eur LY]
+			,'Dim Store'[Store Open Date] <= maxCY
+			,'Dim Store'[Store Close Date] >= maxCY
+			,'Dim Store'[Store Open Date] <= maxLY
+			,'Dim Store'[Store Close Date] >= maxLY
+			)
+      
+Sales Gross Amount Eur Comp MTD:=
+ var maxCY = max('Dim Date'[Date])
+ var mis = SUMX(Filter(All('Dim Date'),'Dim Date'[Year] = MAX('Dim Date'[Year]) && 'Dim Date'[Month Number] = MAX('Dim Date'[Month Number]) && 'Dim Date'[Date] <= maxCY), [Sales Gross Amount Eur Comp])
+return mis
+
+Sales Gross Amount Eur Comp LYMTD:= 
+ var maxCY = max('Dim Date'[Date])
+ var mis = SUMX(Filter(All('Dim Date'),'Dim Date'[Year] = MAX('Dim Date'[Year]) && 'Dim Date'[Month Number] = MAX('Dim Date'[Month Number]) && 'Dim Date'[Date] <= maxCY), [Sales Gross Amount Eur Comp LY])
+return mis
+
+Sales Gross Amount Eur Comp YTD:= 
+ var maxCY = max('Dim Date'[Date])
+ var mis = SUMX(Filter(All('Dim Date'),'Dim Date'[Year] = MAX('Dim Date'[Year]) && 'Dim Date'[Date] <= maxCY), [Sales Gross Amount Eur Comp])
+return mis
+
+es Gross Amount Eur Comp LYTD:= 
+ var maxCY = max('Dim Date'[Date])
+ var mis = SUMX(Filter(All('Dim Date'),'Dim Date'[Year] = MAX('Dim Date'[Year]) && 'Dim Date'[Date] <= maxCY), [Sales Gross Amount Eur Comp LY])
+return mis
+
+
+
+
+
+
+
+
+
+
