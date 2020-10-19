@@ -341,38 +341,246 @@ ON b.operation_id = a.operation_id
 		where text like '%DIM_CALENDAR%'
 		
 ------------------------------------------------------------------------------------------------------------
---  COMPARABILITA' VENDITE		
-	,cast (case
-				when case	--la data di oggi è comparabile con l'anno scorso ?
-						when dateadd(yy, -1, ff.[FootfallDate]) >= isnull(ds.[StoreOpenDate],'1900-01-01')		--lo store l'anno scorso era aperto
-							and ff.[FootfallDate] <= ds.StoreCloseDate then '1'									--lo store oggi non è chiuso
-						else '0'
-						end = 0
-					and 
-					case	--la data dell'anno scorso è comparabile con oggi ?
-						when ff.[FootfallDate] >= isnull(ds.[StoreOpenDate],'1900-01-01')							--lo store oggi è aperto
-							and dateadd(dd, 364, ff.[FootfallDate]) <= cast(getdate() as date) then '1'			--non valutiamo oltre la data di oggi L4L
-						else '0'
-						end = 0
-				then 0	-- se entrambe 0 allora 0
+--  LOG
+CREATE PROCEDURE [log].[p_Log_JobStepStart] (@JobId uniqueidentifier, @JobNumber smallint, @JobStepNumber smallint, @JobStepDescription varchar(255), @ProcedureName varchar(255) = NULL, @InputParameters XML, @JobStepId uniqueidentifier OUTPUT)
+AS
+BEGIN
 
-				else 1	-- altrimenti 1
-				end as bit) as [Flag SalesDate Comparabile]
+	SET @JobStepId = newid()
 
-	--la data è comparabile con l'anno scorso ?
-	,cast(case
-		when dateadd(yy, -1, ff.[FootfallDate]) >= isnull(ds.[StoreOpenDate],'1900-01-01') 
-			and ff.[FootfallDate] <= ds.StoreCloseDate then '1'
-		else '0'
-		end as bit)									as [Flag SalesDate Comparabile withLY]
+	INSERT INTO [ETL].[Log].[Log] (JobNumber, JobId, JobStepNumber, JobStepId, JobName, JobDescription, JobStepDescription, ProcedureName, StartTime, InputParams)
+	SELECT
+		  @JobNumber
+		, @JobId
+		, @JobStepNumber
+		, @JobStepId
+		, J.JobName
+		, J.JobDescription
+		, @JobStepDescription
+		, @ProcedureName
+		, getdate()
+		, @InputParameters
+	FROM [Log].[Job] J
+	WHERE J.JobNumber = @JobNumber
+	OR (J.JobNumber = 0 AND @JobNumber IS NULL)
+	END
 
-	--la data è comparabile con l'anno successivo ?
-	,cast(case
-		when ff.[FootfallDate] >= isnull(ds.[StoreOpenDate],'1900-01-01') 
-			and dateadd(dd, 364, ff.[FootfallDate]) <= cast(getdate() as date) then '1'
-		else '0'
-		end as bit)									as [Flag SalesDate Comparabile withCY]
-  FROM [dwh].[FactFootfall] ff
+CREATE PROCEDURE [log].[p_Log_JobStepSuccess] (@JobStepId uniqueidentifier)
+AS
+BEGIN
 
-  left outer join [dwh].[DimStore] ds
-	on ff.StoreKey = ds.StoreKey
+	UPDATE [ETL].[Log].[Log]
+		SET EndTime = getdate(),
+			Duration = abs(datediff(mi, StartTime, getdate())),
+			Status = 'SUCCESS',
+			ErrorNumber = 0,
+			ErrorSeverity = 0,
+			ErrorState = 0
+	WHERE JobStepId = @JobStepId
+
+END
+
+CREATE PROCEDURE [log].[p_Log_JobStepFailure] (@JobStepId uniqueidentifier)
+AS
+BEGIN
+
+	DECLARE @ErrorNumber int,
+			@ErrorSeverity smallint,
+			@ErrorState smallint,
+			@ErrorProcedure varchar(255),
+			@ErrorLine smallint,
+			@ErrorMessage varchar(max)
+			
+    SELECT 
+          @ErrorNumber = ERROR_NUMBER()
+        , @ErrorSeverity = ERROR_SEVERITY()
+        , @ErrorState = ERROR_STATE()
+        , @ErrorProcedure = ERROR_PROCEDURE()
+        , @ErrorLine = ERROR_LINE()
+        , @ErrorMessage = ERROR_MESSAGE()
+
+	UPDATE [ETL].[Log].[Log]
+		SET EndTime = getdate(),
+			Duration = abs(datediff(mi, StartTime, getdate())),
+			Status = 'FAILED',
+			ErrorNumber = @ErrorNumber,
+			ErrorSeverity = @ErrorSeverity,
+			ErrorState = @ErrorState,
+			ErrorProcedure = @ErrorProcedure,
+			ErrorLine = @ErrorLine,
+			ErrorMessage = @ErrorMessage
+	WHERE JobStepId = @JobStepId
+
+
+	/* ******************************************************************************
+	SEND MAIL
+	****************************************************************************** */
+
+	
+--DICHIARAZIONE VARIABILI
+	DECLARE	@JobId uniqueidentifier,
+			@JobName varchar(100),
+			@JobDescription varchar(100),
+			@JobStepDescription varchar(100),
+			@ProcedureName varchar(100),
+			@StartTime datetime,
+			@Duration int,
+			@MailSubject nvarchar(255),
+			@MailBody nvarchar(max)
+
+--ASSEGNAZIONE VARIABILI
+	SELECT
+		  @JobId = JobId
+		, @JobName = JobName
+		, @JobDescription = JobDescription
+		, @JobStepDescription = JobStepDescription
+		, @ProcedureName = ProcedureName 
+		, @StartTime = StartTime
+		, @Duration = Duration
+	FROM [ETL].[Log].[Log]
+	WHERE JobStepId = @JobStepId
+
+	SET @MailSubject =  'Consolidamento DWH - Errore nello step "' + ISNULL('"' +  @JobStepDescription + '" ', 'N.A.') + '" della procedura "' + @ProcedureName + '"'
+
+	SET @MailBody = CONCAT(
+		  'E'' fallito lo step ' + isnull('"' + @JobStepDescription + '" ', '') 
+		, 'della procedura "' + @ProcedureName 
+		, '".'
+		, CHAR(13)
+		, 'Lo step fallito è iniziato alle ' 
+		, CAST(@StartTime as time(0)) 
+		, ' del ' 
+		, CONVERT(varchar(10), @StartTime, 105) 
+		, '. La durata complessiva dello step fallito è di ' 
+		, CAST(@Duration / 60 as varchar(4)) 
+		, ' minuti.'
+		, CHAR(13)
+		, CHAR(13)
+		, 'Dettagli errore'
+		, CHAR(13)
+		, '  - Error Number: ' 
+		, ISNULL(CAST(@ErrorNumber as varchar(10)), 50000) 
+		, CHAR(13)
+		, '  - Error Message: ' 
+		, ISNULL(CAST(LEFT(@ErrorMessage, 300) as varchar(300)), 'Not Available')
+		, CHAR(13)
+		, CHAR(13)
+		)
+
+--INVIO MAIL TRAMITE CLR		
+	EXEC [dbo].[xp_SendMail]
+			@smtpServer					= 'smtprelay.percassi.com',
+			@smtpUser					= '', 
+			@smtpPasswd					= '', 
+			@recipients					= 'PM.IT.Middleware.Team@percassi.it,marco.amicabile@porini.it', 
+			@recipientsCC				= '', 
+			@recipientsBCC				= '', 
+			@subject					= @MailSubject,
+			@FROM						= 'etl@percassi.it', 
+			@body						= @MailBody,
+			@Attachment					= '', 
+			@AttachmentFileExtension	= ''
+
+
+
+
+	/* OLD versione Danilo
+	DECLARE	@JobId uniqueidentifier,
+			@JobName varchar(100),
+			@JobDescription varchar(100),
+			@JobStepDescription varchar(100),
+			@ProcedureName varchar(100),
+			@StartTime datetime,
+			@Duration int,
+			@MailSubject nvarchar(255),
+			@MailBody nvarchar(max),
+			@MailStmt nvarchar(max),
+			@EMailProfile nvarchar(255),
+			@ToList nvarchar(max),
+			@CCList nvarchar(max),
+			@BCCList nvarchar(max)
+
+	SELECT
+		  @JobId = JobId
+		, @JobName = JobName
+		, @JobDescription = JobDescription
+		, @JobStepDescription = JobStepDescription
+		, @ProcedureName = ProcedureName 
+		, @StartTime = StartTime
+		, @Duration = Duration
+	FROM [ETL].[Log].[Log]
+	WHERE JobStepId = @JobStepId
+
+	SET @MailSubject =  'Consolidamento DWH - Errore nello step "' + ISNULL('"' +  @JobStepDescription + '" ', 'N.A.') + '" della procedura "' + @ProcedureName + '"'
+
+	SET @MailBody = CONCAT(
+		  'E'' fallito lo step ' + isnull('"' + @JobStepDescription + '" ', '') 
+		, 'della procedura "' + @ProcedureName 
+		, '".'
+		, CHAR(13)
+		, 'Lo step fallito è iniziato alle ' 
+		, CAST(@StartTime as time(0)) 
+		, ' del ' 
+		, CONVERT(varchar(10), @StartTime, 105) 
+		, '. La durata complessiva dello step fallito è di ' 
+		, CAST(@Duration / 60 as varchar(4)) 
+		, ' minuti.'
+		, CHAR(13)
+		, CHAR(13)
+		, 'Dettagli errore'
+		, CHAR(13)
+		, '  - Error Number: ' 
+		, ISNULL(CAST(@ErrorNumber as varchar(10)), 50000) 
+		, CHAR(13)
+		, '  - Error Message: ' 
+		, ISNULL(CAST(LEFT(@ErrorMessage, 300) as varchar(300)), 'Not Available')
+		, CHAR(13)
+		, CHAR(13)
+		, 'In allegato il file di Log relativo all''operazione fallita.'
+		)
+
+	SET @MailStmt = 
+	'SET NOCOUNT ON
+	GO
+	SELECT * FROM [dbo].[fn_Get_JobStepLog](''' + CAST(@JobStepId as varchar(36)) + ''')'
+	
+	SELECT TOP 1 @EMailProfile = ParameterValue FROM [ETL].[Log].Parameter
+	WHERE ParameterType = 'EMAIL_PROFILE'
+
+	SELECT @ToList = STRING_AGG(ParameterValue, ';') FROM [ETL].[Log].Parameter
+	WHERE ParameterType = 'EMAIL_TO'
+	
+	SELECT @CCList = STRING_AGG(ParameterValue, ';') FROM [ETL].[Log].Parameter
+	WHERE ParameterType = 'EMAIL_CC'
+	
+	SELECT @BCCList = STRING_AGG(ParameterValue, ';') FROM [ETL].[Log].Parameter
+	WHERE ParameterType = 'EMAIL_BCC'
+
+	EXEC msdb..sp_send_dbmail
+		  @profile_name = @EMailProfile
+		, @recipients = @ToList
+		, @copy_recipients = @CCList
+		, @blind_copy_recipients = @BCCList
+		, @subject = @MailSubject
+		, @body = @MailBody
+		, @body_format = 'TEXT'
+		, @importance = 'high'
+--		, @sensitivity = 'sensitivity'
+--		, @file_attachments = 'attachment [ ; ...n ]'
+		, @query = @MailStmt
+		, @execute_query_database = 'DWH'
+		, @attach_query_result_as_file = 1
+		, @query_attachment_filename = 'LOG.txt'
+		, @query_result_no_padding = 1
+		, @query_result_header = 1
+		, @query_result_separator = ';'
+		, @exclude_query_output = 0
+		*/
+END
+	
+	
+	
+	
+	
+	
+	
