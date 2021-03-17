@@ -578,7 +578,25 @@ BEGIN
 		*/
 END
 	
-	
+----------------------------------------------------------------------------------------------------------------------------
+--- check se due tabelle sono identiche
+
+SELECT * FROM tab1
+UNION 
+SELECT * FROM tab2
+EXCEPT 
+SELECT * FROM tab1
+INTERSECT
+SELECT * FROM tab2;
+
+
+SELECT *
+FROM
+(SELECT * FROM tab1
+UNION ALL  
+SELECT * FROM tab2) data
+GROUP BY col1,col2,...
+HAVING count(*)!=2
 	
 	
 	
