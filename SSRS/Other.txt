@@ -70,4 +70,9 @@ Turnover vs Budget MTD (pmanstyle)
 	, sum(Fields!QuantitySold.Value) / iif((sum(Fields!QuantityStock.Value) + sum(Fields!QuantitySold.Value)) = 0, 1, (sum(Fields!QuantityStock.Value) + sum(Fields!QuantitySold.Value)))
 )
                                 
-                                
+      
+-----------------------------------------------------------------------------------------------------------------------------
+-- calcolo % sui subtotali in Tablix
+
+=Fields!UnitsSold.Value/Sum(Fields!UnitsSold.Value, "GroupName or DatasetName")
+
