@@ -5,9 +5,9 @@ Application.ScreenUpdating = False
 Application.EnableEvents = False  
 Application.DisplayStatusBar = False  
 Application.Calculation = xlCalculationManual  
-&nbsp;
+
 &nbsp;&nbsp;&nbsp;&nbsp; ... vba script ...  
-&nbsp;
+
 Application.ScreenUpdating = True  
 Application.EnableEvents = True  
 Application.DisplayStatusBar = True  
