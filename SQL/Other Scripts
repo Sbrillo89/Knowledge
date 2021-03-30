@@ -1,3 +1,16 @@
+/*********************************************************************************************
+Author: Name (Company)
+CreatedOn: yyyy-mm-dd
+Description:
+Changelog:
+	--2020-12-01 (MAM): integrata logica fusione ...
+						escludiamo tutti gli ordini ecommerce ...
+	--2021-03-29 (MAM): integrata logica fusione ...
+						Da una certa data in poi, gli orlav ..
+						Teniamo lo storico fino ad una certa data...
+						Escludiamo i tipi ordine ...
+						
+*********************************************************************************************/
 
 --------------------------------------------------------------------
 --ultima datetime di modifica in tabella sql
