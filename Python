@@ -12,3 +12,19 @@ pd.concat([df_a, df_b])
 
 #cbind
 pd.concat([df_a, df_b], axis=1)
+
+####################################################################
+
+import time
+import pyautogui as gui
+
+
+try:
+    while True:
+        gui.click()
+        time.sleep(5)
+
+except KeyboardInterrupt:
+    print('interrupted!')
+    
+####################################################################
