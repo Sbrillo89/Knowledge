@@ -72,7 +72,39 @@ return mis
 
 
 
-
+Selected Order Status Code = 
+VAR __DISTINCT_VALUES_COUNT = DISTINCTCOUNT('DimWorkingOrderStatus'[Order Status Code])
+VAR __MAX_VALUES_TO_SHOW = 10
+VAR ValuesSelected =
+"Status selected: " & IF(
+		__DISTINCT_VALUES_COUNT > __MAX_VALUES_TO_SHOW,
+		CONCATENATE(
+			CONCATENATEX(
+				TOPN(
+					__MAX_VALUES_TO_SHOW,
+					VALUES('DimWorkingOrderStatus'[Order Status Code]),
+					'DimWorkingOrderStatus'[Order Status Code],
+					ASC
+				),
+				'DimWorkingOrderStatus'[Order Status Code],
+				", ",
+				'DimWorkingOrderStatus'[Order Status Code],
+				ASC
+			),
+			", etc."
+		),
+		CONCATENATEX(
+			VALUES('DimWorkingOrderStatus'[Order Status Code]),
+			'DimWorkingOrderStatus'[Order Status Code],
+			", ",
+			'DimWorkingOrderStatus'[Order Status Code],
+			ASC
+		)
+	)
+VAR IsItFiltered =
+    IF ( ISFILTERED ( 'DimWorkingOrderStatus'[Order Status Code-Description] ), ValuesSelected, "All Selected" )
+RETURN
+	IsItFiltered
 
 
 
