@@ -114,6 +114,17 @@ RETURN
 	IsItFiltered
 
 
-
+Dim Transaction Date = ADDCOLUMNS(
+                            CALENDAR(
+                                  MIN('Fact Project Details Charges'[Transaction Date])
+                                , MAX('Fact Project Details Charges'[Transaction Date])
+                            )
+                            ,"Year",FORMAT([Date],"yyyy")
+                            ,"Month",FORMAT([Date],"MMMM")
+                            ,"Month No",FORMAT([Date],"MM")
+                            ,"Day",FORMAT([Date],"dd")
+                            ,"Quarter",FORMAT([Date],"Q")
+                            ,"Week",FORMAT([Date],"ww")
+)
 
 
