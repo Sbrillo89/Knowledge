@@ -1,3 +1,322 @@
+
+/*********************************************************************************************
+Author: Danilo Selva (Porini) - Amicabile Marco (Porini)
+CreatedOn: 2021-07-29
+
+Description:
+	-Calcolo del TopParent a partire dalla SAP_CEWB
+	-Aggiunto calcolo delle righe IsFiller=1 per il calcolo delle colonne numeriche dell'organization chart
+
+Changelog:
+	--2021-09-29 (MAM): gestione nella cte SourceChildHistorical delle versioni di produzione usando solo la versione 1 
+
+Test command:
+	-- exec [stg].[sp_Calculate_BOM]
+
+*********************************************************************************************/
+
+CREATE PROCEDURE [stg].[sp_Calculate_BOM]
+AS
+BEGIN
+/* ****************************************************************************************************
+SOURCE
+**************************************************************************************************** */
+DROP TABLE IF EXISTS #Source
+;WITH SourceTopParent AS
+(
+	SELECT DISTINCT
+		 CONCAT(p.WERKS,'-',CASE
+							WHEN TRY_CAST(p.MATNR AS INT) IS NULL THEN p.MATNR
+							ELSE CAST(CAST(p.MATNR AS INT) AS NVARCHAR(40))  END) AS Materiale
+		 ,p.WERKS AS Plant
+	FROM [stg].[SAP_ZPP_BOM_V] p
+	LEFT OUTER JOIN [stg].[SAP_ZPP_BOM_V] c
+		ON p.MATNR = c.IDNRK
+		AND c.MATNR <> c.IDNRK -- Per prendere anche le BOM di un livello solo (TopParent = Materiale = Componente)
+		AND p.WERKS = c.WERKS
+	WHERE c.IDNRK IS NULL
+
+	--MATNR --> Materiale
+	--IDNRK --> Componente
+
+	-- SELECT * FROM [stg].[SAP_ZPP_BOM_V] WHERE MATNR = IDNRK
+	-- SELECT * FROM [stg].[SAP_ZPP_BOM_V] WHERE IDNRK = '30011196'
+),
+SourceChildHistorical AS
+(
+	SELECT		
+		 RANK() OVER(PARTITION BY CONCAT(c.WERKS, '-', c.MATNR) ORDER BY c.STLAL) AS Ranking --teniamo la versione più recente delle componenti prendendo: la prima alternativa (DB_Alt) la versione di validità più recente (In_val)
+		,CONCAT(c.WERKS,'-',CASE
+							WHEN TRY_CAST(c.MATNR AS INT) IS NULL THEN c.MATNR
+							ELSE CAST(CAST(c.MATNR AS INT) AS NVARCHAR(40))  END) as Parent
+		,CONCAT(c.WERKS,'-',CASE
+							WHEN TRY_CAST(c.IDNRK AS INT) IS NULL THEN c.IDNRK
+							ELSE CAST(CAST(c.IDNRK AS INT) AS NVARCHAR(40))  END) as Materiale
+		--,c.Nodo
+		--,c.Contatore
+		,c.WERKS as Plant
+	FROM [stg].[SAP_ZPP_BOM_V] c
+	INNER JOIN (	--filtro le BOM sulla prima versione di produzione presente nella MKAL
+				SELECT 
+					 WERKS	--vedo qual'è la versione di produzione (STLAL) da usare
+					,MATNR
+					,STLAL
+				FROM (
+					SELECT --vedo nella MKAL qual è il primo VERID in ordine alfanumerico
+					 VERID
+					,STLAL
+					,WERKS
+					,MATNR
+					--,MKSP
+					,ROW_NUMBER() OVER( PARTITION BY WERKS, MATNR ORDER BY VERID) AS RN
+					FROM [stg].[SAP_MKAL]
+					WHERE 
+						CAST(BDATU AS DATE) > CAST(GETDATE() AS DATE) --A.Guarnieri/M.Malinverno: Non considerare le versioni con fine validità < today (MKAL-BDATU < today)
+						AND MKSP = ''	--A.Guarnieri/M.Malinverno:	Non considerare le versioni con blocco (MKAL-MKSP <> blank)
+					) a
+					WHERE RN = 1
+				) mk
+				ON c.WERKS = mk.WERKS
+				AND c.MATNR = mk.MATNR
+				AND c.STLAL = mk.STLAL
+		
+	WHERE CONCAT(c.WERKS, '-', c.IDNRK) <> CONCAT(c.WERKS, '-', c.MATNR)
+	AND c.IDNRK IS NOT NULL
+	--AND c.DB_alt = '1'		--mam 20210929: filtriamo la versione 1
+),
+SourceChildCurrent AS
+(
+	SELECT * FROM SourceChildHistorical
+	WHERE Ranking = 1
+),
+Source AS
+(
+	SELECT
+		  Materiale as MaterialeID
+		, NULL as Parent
+		, Materiale AS Materiale
+		--, 1 as Nodo
+		--, 1 as Contatore
+		, Plant
+	FROM SourceTopParent
+	UNION ALL
+	SELECT
+		  CONCAT(Parent, '-', Materiale) as MaterialeID
+		, Parent
+		, Materiale
+		--, Nodo
+		--, Contatore 
+		, Plant
+	FROM SourceChildCurrent
+)
+SELECT * INTO #Source FROM Source
+
+--SELECT * FROM #Source
+
+/* ****************************************************************************************************
+SOURCE RICORSIVA
+**************************************************************************************************** */
+DROP TABLE IF EXISTS #SourceRecursive
+;WITH SourceRecursive AS
+(
+	SELECT
+		  Materiale as TopParent
+		, CAST(NULL as nvarchar(101)) as ParentID
+		, MaterialeID
+		, Parent
+		, Materiale
+		--, Nodo
+		--, Contatore
+		, 0 as Livello 
+		, Plant
+		--, CAST(0 as bigint) as PreviousLevelRowNumber
+		--, CAST(1 as bigint) as LevelRowNumber
+	FROM #Source
+	WHERE Parent IS NULL
+
+	UNION ALL
+
+	SELECT
+		  SR.TopParent
+		, CAST(SR.MaterialeID AS NVARCHAR(101)) as ParentID
+		, S.MaterialeID
+		, S.Parent
+		, S.Materiale
+		--, S.Nodo
+		--, S.Contatore
+		, SR.Livello + 1 as Livello
+		, S.Plant
+		--, SR.RowNumber as PreviousLevelRowNumber
+		--, ROW_NUMBER() OVER (PARTITION BY Livello ORDER BY S.Parent, S.Materiale) as LevelRowNumber
+	FROM #Source S
+	INNER JOIN SourceRecursive SR
+		ON S.Parent = SR.Materiale
+)
+SELECT DISTINCT * INTO #SourceRecursive FROM SourceRecursive
+-- La DISTINCT qua serve. Vedi sotto (senza DISTINCT)
+/*
+SELECT TopParent, ParentID, MaterialeID FROM #SourceRecursive GROUP BY TopParent, ParentID, MaterialeID HAVING COUNT(*) > 1
+ORDER BY TopParent, ParentID, MaterialeID
+
+SELECT * FROM #SourceRecursive WHERE MaterialeID = '80000219-11000005' AND TopParent = '30002482'
+SELECT * FROM #SourceRecursive WHERE MaterialeID = '80000218-80000219' AND TopParent = '30002482'
+*/
+
+--SELECT * FROM #SourceRecursive
+--ORDER BY TopParent, ParentID, MaterialeID
+
+/* ****************************************************************************************************
+SOURCE RICORSIVA CON FILL DEI GAP E COUNTING SUL LIVELLO 
+(non serve per l'output ma per mantenere i corretti legami)
+**************************************************************************************************** */
+DROP TABLE IF EXISTS #SourceMaxLivello
+
+SELECT TopParent, MAX(Livello) as MaxLivello INTO #SourceMaxLivello
+FROM #SourceRecursive
+GROUP BY TopParent
+
+--SELECT * FROM #SourceMaxLivello
+--WHERE MaxLivello = 0
+
+DROP TABLE IF EXISTS #SourceMap
+
+SELECT 
+	  *
+	, CAST(0 as bit) as IsFiller
+	, 0 as PreviousLevelRowNumber
+	, 1 as LevelRowNumber 
+INTO #SourceMap FROM #SourceRecursive 
+WHERE Livello = 0
+
+DECLARE @Livello int = 1,
+		@MaxLivello int
+
+SELECT @MaxLivello = MAX(Livello) FROM #SourceRecursive
+
+WHILE @Livello <= @MaxLivello
+BEGIN
+
+	INSERT INTO #SourceMap
+	SELECT DISTINCT
+			ISNULL(SR.TopParent  , S.TopParent  )    as TopParent
+		  , ISNULL(SR.ParentID   , S.MaterialeID)    as ParentID
+		  , ISNULL(SR.MaterialeID, S.MaterialeID)    as MaterialeID
+		  , ISNULL(SR.Parent	 , S.Materiale  )    as Parent	 
+		  , ISNULL(SR.Materiale	 , S.Materiale  )    as Materiale
+		  --, SR.Nodo
+		  --, SR.Contatore
+		  , ISNULL(SR.Livello	, S.Livello + 1 )    as Livello
+		  , S.Plant
+		  , CASE
+				WHEN SR.Materiale IS NOT NULL
+					THEN CAST(0 as bit)
+				ELSE CAST(1 as bit)
+			END as IsFiller
+		  , S.LevelRowNumber as PreviousLevelRowNumber
+		  , ROW_NUMBER() OVER(PARTITION BY ISNULL(SR.TopParent, S.TopParent), ISNULL(SR.Livello	, S.Livello + 1) ORDER BY S.LevelRowNumber, ISNULL(SR.ParentID, S.ParentID), ISNULL(SR.MaterialeID, S.MaterialeID)) as LevelRowNumber
+	FROM 
+		(
+			SELECT S.* FROM #SourceMap S
+			INNER JOIN #SourceMaxLivello SM
+				ON S.TopParent = SM.TopParent
+			WHERE S.Livello = @Livello - 1 -- Livello precedente (parent)
+			AND S.Livello < SM.MaxLivello -- Escludi le BOM che hanno già raggiunto il max livello di profondità necessario
+		) S
+	LEFT OUTER JOIN #SourceRecursive SR
+		ON S.TopParent = SR.TopParent
+		AND S.MaterialeID = SR.ParentID
+		AND S.IsFiller = 0 -- Escludo dalla JOIN i Filler del livello precedente (ne creerà di nuovi perché è comunque in LEFT ma eviterà di valutare i filler che "moltiplicano" i parent
+		AND SR.Livello = @Livello -- Livello corrente
+
+	SET @Livello = @Livello + 1
+
+END
+
+--SELECT * FROM #SourceMap
+--ORDER BY TopParent, Livello, ParentID, MaterialeID
+
+/* ****************************************************************************************************
+RISULTATO FINALE
+**************************************************************************************************** */
+DROP TABLE IF EXISTS #Output
+;WITH SourceWithRowNumber AS
+(
+	SELECT
+		  TopParent
+		, ParentID
+		, MaterialeID
+		, Parent
+		, Materiale
+		, Livello
+		, IsFiller
+		, PreviousLevelRowNumber
+		, LevelRowNumber
+		, ROW_NUMBER() OVER (PARTITION BY TopParent ORDER BY Livello, PreviousLevelRowNumber, LevelRowNumber) as RowNumber
+		, Plant
+	FROM #SourceMap
+)
+--SELECT * FROM SourceWithRowNumber
+, Output AS
+(
+	SELECT F1.*, ISNULL(F2.RowNumber, 0) as ParentRowNumber
+	FROM SourceWithRowNumber F1
+	LEFT OUTER JOIN SourceWithRowNumber F2
+		ON F1.TopParent = F2.TopParent
+		AND F1.ParentID = F2.MaterialeID
+		AND F1.Livello = F2.Livello + 1 -- Serve il confronto sul Livello
+		AND F1.PreviousLevelRowNumber = F2.LevelRowNumber -- Serve il confronto sul RowNumber
+)
+SELECT * INTO #Output FROM Output
+
+DROP INDEX IF EXISTS tmp_FinalResult ON #Output
+CREATE CLUSTERED INDEX tmp_FinalResult ON #Output (TopParent, Livello, ParentID, MaterialeID) 
+
+-- SELECT * FROM #Output
+
+/* ****************************************************************************************************
+CALCOLO LEAD TIME
+**************************************************************************************************** */
+DROP TABLE IF EXISTS #WOLT
+SELECT
+	 CAST(CONCAT(t.WERKS
+			,'-',CASE
+					WHEN TRY_CAST(r.PLNBEZ AS INT) = 0 THEN '<N.A.>'
+					WHEN TRY_CAST(r.PLNBEZ AS INT) IS NULL THEN r.PLNBEZ
+					ELSE CAST(CAST(r.PLNBEZ AS INT) AS NVARCHAR(40))  END) AS NVARCHAR(50))	 AS Materiale
+	,AVG(CAST(DATEDIFF(dd ,CAST(CASE 
+			WHEN r.GSTRI = '00000000' THEN NULL
+			ELSE r.GSTRI END
+			AS DATE) ,CAST(CASE 
+			WHEN r.GLTRI = '00000000' THEN NULL
+			ELSE r.GLTRI END
+			AS DATE)) AS FLOAT))		AS [LeadTime]
+INTO #WOLT
+FROM [stg].[SAP_AFKO] r		--Dettaglio date e materiali
+LEFT OUTER JOIN [stg].[SAP_AUFK] t	--Testate ordini di produzione
+	ON r.AUFNR = t.AUFNR
+GROUP BY CONCAT(t.WERKS
+			,'-',CASE
+					WHEN TRY_CAST(r.PLNBEZ AS INT) = 0 THEN '<N.A.>'
+					WHEN TRY_CAST(r.PLNBEZ AS INT) IS NULL THEN r.PLNBEZ
+					ELSE CAST(CAST(r.PLNBEZ AS INT) AS NVARCHAR(40))  END)
+
+TRUNCATE TABLE [stg].[SQL_BOM]
+INSERT INTO [stg].[SQL_BOM] ([TopParent], [ParentID], [MaterialeID], [Parent], [Materiale], [Livello], [IsFiller], [PreviousLevelRowNumber], [LevelRowNumber], [RowNumber], [Plant], [ParentRowNumber], [LeadTime])
+SELECT 
+	o.*
+	,isnull(w.LeadTime,0) as LeadTime
+FROM #Output o
+left outer join #WOLT w
+	on o.Materiale = w.Materiale
+	
+--DROP TABLE IF EXISTS STG.SQL_BOM
+--SELECT * INTO STG.SQL_BOM FROM #Output
+
+
+END
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
 https://www.powershellgallery.com/packages/dbatools/1.1.25
 
 /*********************************************************************************************
