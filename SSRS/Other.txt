@@ -1,3 +1,5 @@
+=join(Parameters!Store.Value,";")
+
 
 default value for Date parameter from OLAP
 
