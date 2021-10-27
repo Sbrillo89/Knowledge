@@ -80,6 +80,13 @@ SELECT Parameter
 INTO #par_DType
 FROM dbo.fn_Split(@DTypeOfPurch,'|')
 
+---- Salvataggio liste parametri in tabelle temporanee + aggiunta indice ----
+	SELECT CAST(Parameter as nvarchar(50)) as Parameter
+	into #Par_Store
+	FROM dbo.fn_Split(@Store, ';')
+		CREATE NONCLUSTERED INDEX NCI_Store_000
+		ON #Par_Store (Parameter)
+
 
 --Estrazione lista articoli che filtreranno le vendite
 SELECT DISTINCT modello	--altrimenti duplica per area
