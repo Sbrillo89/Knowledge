@@ -28,6 +28,9 @@ WITH RECOMPILE
 AS
 BEGIN
 
+--Controllo validità date
+IF @DateFrom > @DateTo RAISERROR('WARNING! Parameter DateTo can''t precede DateFrom',16,1)
+
 -----------------------------------------------------------------------------------------------------------------------
 -- Step0.
 
