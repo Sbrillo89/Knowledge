@@ -2,7 +2,12 @@
 WO DeliveredQuantity = CALCULATE(  SUM('FactWorkingOrders'[M_WO DeliveredQuantity]) ,REMOVEFILTERS(DimDatePrevious))	
 
 
-
+// Somma running total da data a data
+PPI_Days_Cumulated = 
+CALCULATE (
+    [PPI_Days],
+    FILTER ( ALLSELECTED ( 'DimDate' ), 'DimDate'[Date] <= MAX ( 'DimDate'[Date] ) )
+)
 
 
 Switch between two measures
