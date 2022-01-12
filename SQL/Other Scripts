@@ -1,3 +1,24 @@
+/*****************************************************************************************************************************************************/
+/*
+CET = UTC+1
+
+CEST = UTC+2:
+entra in vigore ogni anno a partire dall'1:00 UTC dell'ultima domenica di marzo e termina alle ore 1:00 UTC dell'ultima domenica di ottobre.
+*/
+
+
+DECLARE @Actual AS DATETIME = GETDATE()
+DECLARE @CETtoPST AS INT = 510	-- CET 9 ore avanti PST  --= 600 -- CEST 10 ore avanti PST
+DECLARE @CETtoEST AS INT = 360 -- CET 6 ore avanti EST  --= 420 -- CEST 7 ore avanti EST
+
+DECLARE @CESTtoPST AS INT = 600	-- CEST 10 ore avanti PST
+DECLARE @CESTtoEST AS INT = 420 -- CEST 7 ore avanti EST
+
+SELECT 
+	 CAST(@Actual AS time) AS Actual
+	,CAST(SWITCHOFFSET(TODATETIMEOFFSET(@Actual,@CETtoPST),0) AS time) as PST
+	,CAST(SWITCHOFFSET(TODATETIMEOFFSET(@Actual,@CETtoEST),0) AS time) as EST
+
 
 
 /*********************************************************************************************
