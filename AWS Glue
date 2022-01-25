@@ -1,0 +1,65 @@
+"""
+    Author: 
+    Release Date: 
+    Description: Test for incremental load
+"""
+
+# Libraries
+import sys
+from awsglue.transforms import *
+from awsglue.job import Job
+from awsglue.utils import getResolvedOptions
+from awsglue.context import GlueContext
+from pyspark.context import SparkContext
+from pyspark.sql.functions import year, month, col, dayofmonth
+
+# Initialize the connection to the cluster
+args = getResolvedOptions(sys.argv,['JOB_NAME'])
+
+sc = SparkContext()
+glueContext = GlueContext(sc)
+spark = glueContext.spark_session
+logger = glueContext.get_logger()   # set custom logging on
+job = Job(glueContext)
+
+job.init(args['JOB_NAME'], args)    #Retrieve bookmark state
+
+# Read data into a DynamicFrame using the Data Catalog metadata
+table_dynF  = glueContext.create_dynamic_frame.from_catalog(
+                                            database="GLUE_DATABASE",
+                                            table_name="TABLE",
+                                            transformation_ctx = "table_dynF", #creating DynamicFrame
+                                            additional_options = {"jobBookmarkKeys":["KEYCOLUMN"],"jobBookmarkKeysSortOrder":"asc"}
+                                            )
+
+# Convert the DynamicFrame to spark dataframe
+table_df = table_dynF.toDF()
+
+#write into the log file:
+logger.info("Table row count: " + str(table_df.count()))  #Count of rows
+
+#Add year,month,dayofmonth columns
+table_df = (table_df
+    .withColumn("year", year(col("DATECOLUMN").cast("timestamp")))
+    .withColumn("month", month(col("DATECOLUMN").cast("timestamp")))
+    .withColumn("day_of_month",dayofmonth(col("DATECOLUMN").cast("timestamp"))))
+
+#Write dataframe to s3 in parquet format organized by folder
+#Folders partition by year,month,dayofmonth columns
+table_df.write.partitionBy("year", "month","day_of_month").format("parquet").option("header","true").mode("append").save('s3://path/')
+
+job.commit()    #Consolidate the bookmark state
+
+
+
+"""
+    Author: 
+    Release Date: 
+    Description: Full load / Overwrite
+"""
+
+table_df.repartition(5).write.format("parquet").option("header","true").mode("overwrite").save('s3://path/')
+
+
+
+
