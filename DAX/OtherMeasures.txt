@@ -9,6 +9,11 @@ CALCULATE (
     FILTER ( ALLSELECTED ( 'DimDate' ), 'DimDate'[Date] <= MAX ( 'DimDate'[Date] ) )
 )
 
+LastNonBlankComment = CALCULATE (
+    MAX(Comments[Comment]), LASTNONBLANK(Comments[Date],1)
+)
+
+
 
 Switch between two measures
 
