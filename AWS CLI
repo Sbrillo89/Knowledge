@@ -1,0 +1,8 @@
+
+
+
+
+aws s3 ls
+aws s3 ls s3://bucketname
+aws s3api get-bucket-tagging --bucket bucketname
+aws s3 ls --summarize --human-readable --recursive s3://bucketname
