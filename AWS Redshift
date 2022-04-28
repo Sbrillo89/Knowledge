@@ -11,5 +11,10 @@ SELECT pg_terminate_backend( 1075031457 )  --1075031457
 
 
 --- convert unix epoch to timestamp
-
 ,timestamp 'epoch' + cast(epoch_column AS bigint)/1000 * interval '1 second' AS epoch_to_timestamp
+
+
+SHOW TIMEZONE
+
+
+,CAST("timestamp" AS timestamp) AT TIME ZONE 'UTC' AT TIME ZONE 'CET'		AS current_timestamp
