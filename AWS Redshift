@@ -16,5 +16,11 @@ SELECT pg_terminate_backend( 1075031457 )  --1075031457
 
 SHOW TIMEZONE
 
-
-,CAST("timestamp" AS timestamp) AT TIME ZONE 'UTC' AT TIME ZONE 'CET'		AS current_timestamp
+select 
+t
+,timestamp 						AS "timestamp"--> UTC+0
+,CAST(timestamp AS timestamp) 	AS "timestamp_cast"
+,CAST(timestamp AS timestamp) AT TIME ZONE 'UTC' AS "UTC"
+,CAST(timestamp AS timestamp) AT TIME ZONE 'UTC' AT TIME ZONE 'Europe/Rome'	AS "Rome"
+from #tag_stage_batch 
+order by t desc
