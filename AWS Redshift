@@ -24,3 +24,57 @@ t
 ,CAST(timestamp AS timestamp) AT TIME ZONE 'UTC' AT TIME ZONE 'Europe/Rome'	AS "Rome"
 from #tag_stage_batch 
 order by t desc
+
+-- l'output di una colonna timezone dipende dalla timezone dell'utente di redshift. non viene memorizzato in tabella il dato "statico" con la timezione della sessione con cui è inserito il dato. 
+-- https://docs.aws.amazon.com/redshift/latest/dg/r_timezone_config.html
+
+
+
+
+What is the best way to assess tables that need to be vacuumed or analyzed?
+This query returns tables where greater than 20% of rows are unsorted or statistics are 20% stale.
+
+SELECT "database", "schema", "table", unsorted, stats_off
+FROM svv_table_info
+WHERE unsorted > 20
+OR stats_off > 20
+
+Running VACUUM or ANALYZE on these tables may improve performance by keeping rows sorted and providing the query planner with accurate information.
+
+
+
+WITH query_sql AS (
+  SELECT
+    query,
+    LISTAGG(text) WITHIN GROUP (ORDER BY sequence) AS sql
+  FROM stl_querytext
+  GROUP BY 1
+)
+SELECT
+  q.query,
+  userid,
+  xid,
+  pid,
+  starttime,
+  endtime,
+  DATEDIFF(milliseconds, starttime, endtime)/1000.0 AS duration,
+  TRIM(database) AS database,
+  (CASE aborted WHEN 1 THEN TRUE ELSE FALSE END) AS aborted,
+  sql
+FROM
+  stl_query q JOIN query_sql qs ON (q.query = qs.query)
+WHERE
+  q.query = ...
+ORDER BY starttime;
+
+
+
+
+
+
+-- Show running queries
+    SELECT user_name, db_name, pid, query
+    FROM stv_recents
+    WHERE status = 'Running';
+
+
