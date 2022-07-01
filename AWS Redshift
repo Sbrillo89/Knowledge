@@ -30,6 +30,16 @@ order by t desc
 
 
 
+i timestamp in tabella sono sempre salvati in UTC.
+
+- <column> AT TIME ZONE 'Europe/Rome':
+specifica che la colonna timestamp è nel determinato fuso orario, quindi viene portato in UTC (roma è UTC +2 quindi vedremo l'ora diminuita di 2 ore)
+
+- CONVERT_TIMEZONE('Europe/Rome', <column>):
+assumendo che la colonna è già in UTC, viene convertita nella timezone selezionata (roma è UTC +2 quindi vedremo l'ora aumentata di 2 ore)
+
+
+
 
 What is the best way to assess tables that need to be vacuumed or analyzed?
 This query returns tables where greater than 20% of rows are unsorted or statistics are 20% stale.
