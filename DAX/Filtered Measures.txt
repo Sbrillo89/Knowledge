@@ -6,3 +6,6 @@ Quantity A + B := CALCULATE(
                             ,'DimArticolo'[Articolo Gruppo] = "A" || 'DimArticolo'[Articolo Gruppo] = "B"
 )
 
+
+PO Order COUNT = CALCULATE( DISTINCTCOUNT(FactPurchaseOrders[PO Order Number]), REMOVEFILTERS(DimDatePrevious))
+
