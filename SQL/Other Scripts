@@ -88,9 +88,9 @@ IF @DateFrom > @DateTo RAISERROR('WARNING! Parameter DateTo can''t precede DateF
 
 --gestione clienti fittizi per gli store cina
 set @StoreKey = REPLACE(
-							REPLACE(@StoreKey,'07329612'--CN - GZD TRADING SHANGHAI
+							REPLACE(@StoreKey,'07329612'
 											,'07329612')	
-							,'07329606'	--'HK - GZD RETAIL HK LTD'
+							,'07329606'	
 							,'07329606;07329607;07329608;07329609;07329610')
 
 --Estrazione Lista Store
@@ -698,7 +698,7 @@ ELSE		--> Se non è il primo del mese oppure esiste già lo snapshot, lo aggiorn
 	BEGIN
 
 		-- Allineo lo Snapshot del mese corrente
-		MERGE [GZD_Stg].[dbo].[HistoryCRM] as Target --tabella nello stage
+		MERGE [dbo].[HistoryCRM] as Target --tabella nello stage
 		USING
 			(
 			Select
