@@ -22,17 +22,14 @@ SELECT
 
 
 /*********************************************************************************************
-Author: Mauro Gittardi (Porini) - Marco Amicabile (Porini)
+Author: 
 CreatedOn: 2021-04-08
 Description: 
-	La procedura estrae i dataset per i 3 fogli di dettaglio del report Merchandise NR1
+
 Changelog:
-	--2021-08-03 - MG - Modificata logica join con lista prodotti da considerare --> Aggiunta Area_Id per quadrature
 
 Test Statements:
 EXEC [rpt].[Merchandise_NR1_Detail_ReportData]  @Season ='0057',@SubSeason ='SALE',@Area='APAC|EMEA' ,@DateFrom='2021-04-01',@DateTo='2021-04-15'
-EXEC [rpt].[Merchandise_NR1_Detail_ReportData]  @Season ='0058',@SubSeason ='SEASON',@Area='APAC|EMEA' ,@DateFrom='2021-04-01',@DateTo='2021-04-15'
-EXEC [rpt].[Merchandise_NR1_Detail_ReportData]  @Season ='0059',@SubSeason ='SEASON',@Area='APAC|EMEA|USA' ,@DateFrom='2020-11-01',@DateTo='2021-04-15'
 
 *********************************************************************************************/
 
@@ -61,8 +58,8 @@ IF @DateFrom > @DateTo RAISERROR('WARNING! Parameter DateTo can''t precede DateF
 --DECLARE @Area NVARCHAR(200)=N'APAC|EMEA|USA'
 --DECLARE @DateFrom DATE ='2021-01-01 00:00:00'
 --DECLARE @DateTo DATE='2021-07-29 00:00:00'
---DECLARE @StoreKey NVARCHAR(MAX)=N'CNSLT|999997;CNSKP|999997;CNHMSP|999997;CNCD|999997;CNCQTS|999997;07329612;CNNJ|999997;CNSIFC|999997;CNITC|999997;CNWK11|999997;1|11;CNIN|999999;EUIN|999999;USAIN|999999;14|10;17|10;20|10;9|10;15|10;26|10;5|10;07329606;HKHC|999998;13|10;1|10;12|10;3|10;MFSTEM|999996;HKMGA|999996;HKMOC|999996'
---DECLARE @DTypeOfPurch NVARCHAR(MAX)=N'<N.A.>|Affiliation|C.A. AGENCY|C.A. HOTEL|ECOMMERCE RU|Gift|INVOICE|Luxure|NO|Other|Personal use|Personale use|Reseller|ShipFromBoutique|Shopping''M|StoreCredit Dipendente|Stylist'
+--DECLARE @StoreKey NVARCHAR(MAX)=N'XXXXX|999999;'
+--DECLARE @DTypeOfPurch NVARCHAR(MAX)=N'<N.A.>|<N.A.>'
 
 --cancellazione tabelle temporanee per debug
 	if OBJECT_ID('tempdb..#par_Store') is not null
@@ -86,150 +83,25 @@ IF @DateFrom > @DateTo RAISERROR('WARNING! Parameter DateTo can''t precede DateF
 --Controllo validità date
 IF @DateFrom > @DateTo RAISERROR('WARNING! Parameter DateTo can''t precede DateFrom',16,1)
 
---gestione clienti fittizi per gli store cina
-set @StoreKey = REPLACE(
-							REPLACE(@StoreKey,'07329612'
-											,'07329612')	
-							,'07329606'	
-							,'07329606;07329607;07329608;07329609;07329610')
-
+--gestione fittizi
+set @StoreKey = REPLACE(@StoreKey,'123','abc')
 --Estrazione Lista Store
 SELECT Parameter as StoreKey
 INTO #par_Store
 FROM dbo.fn_Split(@StoreKey,';')
-
 
 --DocumentTypePfPurchase
 SELECT Parameter
 INTO #par_DType
 FROM dbo.fn_Split(@DTypeOfPurch,'|')
 
----- Salvataggio liste parametri in tabelle temporanee + aggiunta indice ----
-	SELECT CAST(Parameter as nvarchar(50)) as Parameter
-	into #Par_Store
-	FROM dbo.fn_Split(@Store, ';')
-		CREATE NONCLUSTERED INDEX NCI_Store_000
-		ON #Par_Store (Parameter)
 
 
---Estrazione lista articoli che filtreranno le vendite
-SELECT DISTINCT modello	--altrimenti duplica per area
-				,variante	
-				,stagione_id	
-				,sale_co_id	
-				,Area_Id
-INTO #tmp_ProductList
-FROM (
-	SELECT area_id	
-	,modello	
-	,variante	
-	,stagione_id	
-	,sale_co_id	
-	,CASE	
-		WHEN area_id = 'EMEA' OR area_id = 'USA' then 'EMEA+USA'
-		ELSE area_id END AS area_id_group
-	FROM [Formwork_test_dw].[dbo].[AN_Sale_CO_Boutique]	
-	WHERE 1=1	
-		AND congela_YN_Id='Y'
-	UNION	
-	SELECT area_id	
-	,modello	
-	,variante	
-	,stagione_id	
-	,sale_co_id	
-	,CASE	
-		WHEN area_id = 'EMEA' OR area_id = 'USA' THEN 'EMEA+USA'
-		ELSE area_id END AS area_id_group
-	FROM [Formwork_test_dw].[dbo].[AN_Sale_CO_Boutique_WT_Modelli_con_Prefisso]	
-	) a
-	WHERE 
-		a.area_id IN (SELECT * FROM dbo.fn_Split(@Area,'|'))
-		AND a.stagione_id = @Season 
-		AND a.sale_co_id = @SubSeason
-
-
------------------------------------------------------------------------------------------------------------------------
--- Step2. Preparazione dei dataset base in funzione del livello di aggregazione scelto
-
--- aggregazione vendite
-	SELECT
-		 fd.ProductKey
-		,dp.productBolla
-		,dp.ProductCode
-		,dp.ProductVariant
-		,dp.ProductTomaia
-		,dp.ProductLineMerch
-		,SUM(fd.QuantityInventory) AS Quantity
-	INTO #tmp_Document
-	FROM [dbo].[FactDocument] fd
-	INNER JOIN #par_DType dt
-		ON fd.documentTypeOfPurchase = dt.Parameter
-	INNER JOIN #par_Store ps
-		ON fd.StoreKey = ps.StoreKey
-	INNER JOIN [dbo].[DimStore] ds
-		ON ps.StoreKey = ds.StoreKey
-	INNER JOIN #tmp_ProductList pl
-		ON fd.itemCode = pl.Modello
-		AND fd.itemVariant = pl.Variante
-		AND DS.StoreAreaSalesPeriod = pl.Area_Id
-	LEFT OUTER JOIN [dbo].[DimProduct] dp
-		ON fd.ProductKey = dp.productKey
-
-	WHERE 1=1
-		--and fd.documentTypeOfPurchase <> 'ECOMMERCE'
-		--and ds.StoreOLFP <> 'Outlet'			--	filtri OLFP/Channel spostati nella procedura exec [rpt].[Merchandise_NR1_PAR_store] @Country='ITALY|USA'
-		--and ds.StoreChannel <> '<N.A.>'
-		and fd.documentCreatedDate between @DateFrom and @DateTo
-
-	GROUP BY
-		 fd.ProductKey
-		,dp.productBolla
-		,dp.ProductCode
-		,dp.ProductVariant
-		,dp.productTomaia 
-		,dp.productLineMerch
-	
-
--- aggregazione stock
-	SELECT
-		fi.ProductKey
-		,dp.productBolla
-		,dp.ProductCode
-		,dp.ProductVariant
-		,dp.ProductTomaia
-		,dp.ProductLineMerch
-		,MIN(fi.documentCreatedDate) as FirstInventoryMovement
-		,SUM(fi.Quantity) AS Quantity
-	INTO #tmp_Inventory
-	FROM [dbo].[FactInventory] fi
-	INNER JOIN #par_Store ps
-		ON fi.StoreKey = ps.StoreKey
-	INNER JOIN [dbo].[DimStore] ds
-		ON ps.StoreKey = ds.StoreKey
-	INNER JOIN #tmp_ProductList pl
-		ON fi.itemCode = pl.Modello
-		AND fi.itemVariant = pl.Variante
-		AND DS.StoreAreaSalesPeriod = pl.Area_Id
-	LEFT OUTER JOIN [dbo].[DimProduct] dp
-		ON fi.ProductKey = dp.productKey
-
-	WHERE 1=1
-		--ds.StoreOLFP <> 'Outlet'				--	filtri OLFP/Channel spostati nella procedura exec [rpt].[Merchandise_NR1_PAR_store] @Country='ITALY|USA'
-		--AND ds.StoreChannel <> '<N.A.>'
-		AND fi.documentCreatedDate <= @DateTo
-
-	GROUP BY
-		fi.ProductKey
-		,dp.productBolla
-		,dp.ProductCode
-		,dp.ProductVariant	
-		,dp.productTomaia
-		,dp.productLineMerch
 
 
 
 /*********************************************************************************************
-Author: Danilo Selva (Porini) - Amicabile Marco (Porini)
+Author:
 CreatedOn: 2021-07-29
 
 Description:
@@ -545,24 +417,6 @@ left outer join #WOLT w
 END
 
 ----------------------------------------------------------------------------------------------------------------------------------------
-
-https://www.powershellgallery.com/packages/dbatools/1.1.25
-
-/*********************************************************************************************
-Author: Name (Company)
-CreatedOn: yyyy-mm-dd
-Description:
-Changelog:
-	--2020-12-01 (MAM): integrata logica fusione ...
-						escludiamo tutti gli ordini ecommerce ...
-	--2021-03-29 (MAM): integrata logica fusione ...
-						Da una certa data in poi, gli orlav ..
-						Teniamo lo storico fino ad una certa data...
-						Escludiamo i tipi ordine ...
-						
-*********************************************************************************************/
-
---------------------------------------------------------------------
 --ultima datetime di modifica in tabella sql
 
 SELECT last_user_update
@@ -1032,14 +886,14 @@ BEGIN
 
 --INVIO MAIL TRAMITE CLR		
 	EXEC [dbo].[xp_SendMail]
-			@smtpServer					= 'smtprelay.percassi.com',
+			@smtpServer					= 'smtprelay.pippo.com',
 			@smtpUser					= '', 
 			@smtpPasswd					= '', 
-			@recipients					= 'PM.IT.Middleware.Team@percassi.it,marco.amicabile@porini.it', 
+			@recipients					= 'marco@pippo.it', 
 			@recipientsCC				= '', 
 			@recipientsBCC				= '', 
 			@subject					= @MailSubject,
-			@FROM						= 'etl@percassi.it', 
+			@FROM						= 'etl@pippo.it', 
 			@body						= @MailBody,
 			@Attachment					= '', 
 			@AttachmentFileExtension	= ''
